@@ -1,12 +1,10 @@
 package com.wanshi.app.page.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,42 +17,26 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.okhttp.OkHttpClient;
-import com.avos.avoscloud.okhttp.Request;
-import com.avos.avoscloud.okhttp.Response;
-import com.orhanobut.logger.Logger;
 import com.wanshi.app.R;
 import com.wanshi.app.adapter.ListLiveAdapter;
 import com.wanshi.app.bean.Room;
 import com.wanshi.app.page.base.BaseFragment;
 import com.wanshi.app.page.video.LiveVideoViewPlayingActivity;
+import com.wanshi.app.widget.emptyview.EmptyRecyclerView;
+import com.wanshi.app.widget.emptyview.EmptyView;
 import com.wanshi.app.widget.refresh.BGAMoocStyleRefreshViewHolder;
 import com.wanshi.app.widget.refresh.DividerGridItemDecoration;
-
-import org.kymjs.kjframe.utils.KJLoger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-
-/**
- * User: Geek_Soledad(msdx.android@qq.com)
- * Date: 2014-08-27
- * Time: 09:01
- * FIXME
- */
 public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
-
-    private final static String TAG = ListLiveFragment.class.getSimpleName();
-    private static Activity mContext;
-    private RecyclerView recyclerView;
+    private EmptyRecyclerView recyclerView;
     private ListLiveAdapter adapter;
     private BGARefreshLayout mSwipeRefreshWidget;
-    private final OkHttpClient client = new OkHttpClient();
-    private String url ="http://180.76.177.27:8899/update";
-
+    private EmptyView empty;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,7 +44,8 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         mContext = getActivity();
         ((TextView) view.findViewById(R.id.textTitleBar)).setText("正在直播");
         mSwipeRefreshWidget = (BGARefreshLayout) view.findViewById(R.id.swipe_refresh_widget);
-        recyclerView = (RecyclerView) view.findViewById(R.id.gridviewLive);
+        recyclerView = (EmptyRecyclerView) view.findViewById(R.id.gridviewLive);
+        empty = (EmptyView) view.findViewById(R.id.empty);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
@@ -70,10 +53,8 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
 
         adapter = new ListLiveAdapter(getActivity());
         recyclerView.setAdapter(adapter);
-
-
-
-
+        recyclerView.setEmptyView(empty);
+        empty.showEmpty();
         adapter.setOnItemClickListener(new ListLiveAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, Room data) {
@@ -109,112 +90,80 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
 
 
 
-    public void refreshing() throws Exception {
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
-        if(response.isSuccessful()){
-            AVQuery<AVObject> query = new AVQuery<>("Room");
-            query.setLimit(10); // 限制最多10个结果
-            query.orderByDescending("createdAt");
-            query.findInBackground(new FindCallback<AVObject>() {
-                @Override
-                public void done(List<AVObject> list, AVException e) {
-                    adapter.clear();
-                    for (AVObject item : list) {
-                        Log.d(TAG, "Room:" + item.toJSONObject().toString());
-                        final Room room = new Room();
-                        room.setId(item.getObjectId());
-                        room.setUrlStreamAddr(item.getString("stream_addr"));
-                        AVObject avObject = item.getAVObject("conversation");
-                        if(avObject ==null){
-                            KJLoger.log(TAG, "此房间没有聊天室");
-                        }else{
-                            room.setConversationId(item.getAVObject("conversation").getObjectId());
-                            KJLoger.log(TAG, "此房间有聊天室,id:"+item.getAVObject("conversation").getObjectId());
-                        }
-                        AVQuery<AVUser> query = AVUser.getQuery();
-                        query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
-                            @Override
-                            public void done(AVUser avUser, AVException e) {
-                                Logger.d(TAG, "User:" + avUser.toString());
-                                Logger.d(TAG, "portrait:" + avUser.getString("portrait"));
-                                Logger.d(TAG, "nick:" + avUser.getString("nick"));
-                                room.setUrlRoomIcon(avUser.getString("portrait"));
-                                room.setRoomName(avUser.getString("nick"));
-                                adapter.add(room);
-                                mSwipeRefreshWidget.endRefreshing();
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    }
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout bgaRefreshLayout) {
-        new Thread(new Runnable() {
+        AVQuery<AVObject> query = new AVQuery<>("Room");
+        query.setLimit(10); // 限制最多10个结果
+        query.orderByDescending("createdAt");
+        query.findInBackground(new FindCallback<AVObject>() {
             @Override
-            public void run() {
-                try {
-                    refreshing();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mSwipeRefreshWidget.endRefreshing();
-                }
-            }
-        }).start();
-
-    }
-    public void more() throws Exception {
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
-        if(response.isSuccessful()){
-            AVQuery<AVObject> query = new AVQuery<AVObject>("Room");
-            query.setSkip(adapter.getItemCount()); // 忽略前10个
-            query.orderByDescending("updatedAt");
-            query.findInBackground(new FindCallback<AVObject>() {
-                @Override
-                public void done(List<AVObject> list, AVException e) {
-                    for (AVObject item : list) {
-                        Log.d(TAG, "Room:" + item.toJSONObject().toString());
-                        final Room room = new Room();
-                        room.setId(item.getObjectId());
-                        room.setUrlStreamAddr(item.getString("stream_addr"));
-                        AVQuery<AVUser> query = AVUser.getQuery();
-                        query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
-                            @Override
-                            public void done(AVUser avUser, AVException e) {
-                                Logger.d(TAG, "User:" + avUser.toString());
-                                Logger.d(TAG, "portrait:" + avUser.getString("portrait"));
-                                Logger.d(TAG, "nick:" + avUser.getString("nick"));
-                                room.setUrlRoomIcon(avUser.getString("portrait"));
-                                room.setRoomName(avUser.getString("nick"));
-                                adapter.add(room);
-                                mSwipeRefreshWidget.endLoadingMore();
-                            }
-                        });
+            public void done(List<AVObject> list, AVException e) {
+                adapter.clear();
+                for (AVObject item : list) {
+                    Log.d(TAG, "Room:" + item.toJSONObject().toString());
+                    final Room room = new Room();
+                    room.setId(item.getObjectId());
+                    room.setUrlStreamAddr(item.getString("stream_addr"));
+                    AVObject avObject = item.getAVObject("conversation");
+                    if (avObject == null) {
+                        logd("此房间没有聊天室");
+                    } else {
+                        room.setConversationId(item.getAVObject("conversation").getObjectId());
+                        logd("此房间有聊天室,id:" + item.getAVObject("conversation").getObjectId());
                     }
+                    AVQuery<AVUser> query = AVUser.getQuery();
+                    query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
+                        @Override
+                        public void done(AVUser avUser, AVException e) {
+                           logd("User:" + avUser.toString());
+                           logd("portrait:" + avUser.getString("portrait"));
+                           logd("nick:" + avUser.getString("nick"));
+                            room.setUrlRoomIcon(avUser.getString("portrait"));
+                            room.setRoomName(avUser.getString("nick"));
+                            adapter.add(room);
+
+                        }
+                    });
                 }
-            });
-        }
+                mSwipeRefreshWidget.endRefreshing();
+            }
+        });
+
     }
 
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout bgaRefreshLayout) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    more();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mSwipeRefreshWidget.endLoadingMore();
+        AVQuery<AVObject> query = new AVQuery<AVObject>("Room");
+        query.setSkip(adapter.getItemCount()); // 忽略前10个
+        query.orderByDescending("updatedAt");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                for (AVObject item : list) {
+                    Log.d(TAG, "Room:" + item.toJSONObject().toString());
+                    final Room room = new Room();
+                    room.setId(item.getObjectId());
+                    room.setUrlStreamAddr(item.getString("stream_addr"));
+                    AVQuery<AVUser> query = AVUser.getQuery();
+                    query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
+                        @Override
+                        public void done(AVUser avUser, AVException e) {
+                           logd("User:" + avUser.toString());
+                           logd("portrait:" + avUser.getString("portrait"));
+                           logd("nick:" + avUser.getString("nick"));
+                            room.setUrlRoomIcon(avUser.getString("portrait"));
+                            room.setRoomName(avUser.getString("nick"));
+                            adapter.add(room);
+
+                        }
+                    });
                 }
+                mSwipeRefreshWidget.endLoadingMore();
             }
-        }).start();
+        });
         return true;
     }
 }

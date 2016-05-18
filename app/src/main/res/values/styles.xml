@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="tabView">@style/MyTabView</item>
         <item name="android:listDivider">@drawable/divider_bg</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="MyTabView" parent="TabView">

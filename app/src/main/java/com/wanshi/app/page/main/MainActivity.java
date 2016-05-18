@@ -11,6 +11,7 @@ import com.githang.viewpagerindicator.IconPagerAdapter;
 import com.githang.viewpagerindicator.IconTabPageIndicator;
 import com.wanshi.app.R;
 import com.wanshi.app.page.base.BaseFragment;
+import com.wanshi.tool.utils.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        StatusBarUtil.setTranslucent(this);
         initViews();
     }
 

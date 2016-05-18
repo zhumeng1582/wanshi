@@ -3,18 +3,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/white">
     <include
-        layout="@layout/view_title_bar">
-
-    </include>
+        android:id="@+id/titlebarMain"
+        layout="@layout/view_title_bar"/>
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/swipe_refresh_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-    <android.support.v7.widget.RecyclerView
+    <com.wanshi.app.widget.emptyview.EmptyRecyclerView
         android:id="@+id/gridviewLive"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+    <com.wanshi.app.widget.emptyview.EmptyView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>
