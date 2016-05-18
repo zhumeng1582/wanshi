@@ -26,7 +26,10 @@ import com.orhanobut.logger.Logger;
 import com.wanshi.wanshi.adapter.ListLiveAdapter;
 import com.wanshi.wanshi.R;
 import com.wanshi.wanshi.bean.Room;
+import com.wanshi.wanshi.page.base.BaseFragment;
 import com.wanshi.wanshi.page.video.LiveVideoViewPlayingActivity;
+import com.wanshi.wanshi.widget.refresh.BGAMoocStyleRefreshViewHolder;
+import com.wanshi.wanshi.widget.refresh.DividerGridItemDecoration;
 
 import org.kymjs.kjframe.utils.KJLoger;
 

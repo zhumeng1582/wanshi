@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import com.githang.viewpagerindicator.IconTabPageIndicator;
 import com.githang.viewpagerindicator.IconPagerAdapter;
 import com.wanshi.wanshi.R;
+import com.wanshi.wanshi.page.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
