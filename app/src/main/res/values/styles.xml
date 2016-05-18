@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="tabView">@style/MyTabView</item>
+        <item name="android:listDivider">@drawable/divider_bg</item>
+    </style>
+
+    <style name="MyTabView" parent="TabView">
+        <item name="iconWidth">28dp</item>
+        <item name="iconHeight">28dp</item>
+    </style>
+</resources>
