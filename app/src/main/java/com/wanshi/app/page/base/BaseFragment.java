@@ -1,5 +1,6 @@
-package com.wanshi.wanshi.page.base;
+package com.wanshi.app.page.base;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 
 /**
@@ -9,6 +10,8 @@ import android.support.v4.app.Fragment;
  * FIXME
  */
 public class BaseFragment extends Fragment {
+    protected String TAG =  getClass().getSimpleName();
+    protected Activity mContext = getActivity();
     private String title;
     private int iconId;
 
@@ -27,6 +30,4 @@ public class BaseFragment extends Fragment {
     public void setIconId(int iconId) {
         this.iconId = iconId;
     }
-
-
 }

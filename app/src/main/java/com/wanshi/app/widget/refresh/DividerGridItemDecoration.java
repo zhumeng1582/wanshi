@@ -1,4 +1,4 @@
-package com.wanshi.wanshi.widget.refresh;
+package com.wanshi.app.widget.refresh;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-
-import com.wanshi.wanshi.R;
 
 /**
  *

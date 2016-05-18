@@ -1,6 +1,6 @@
-package com.wanshi.wanshi.page.main;
+package com.wanshi.app.page.main;
 
-import com.wanshi.wanshi.page.base.BaseFragment;
+import com.wanshi.app.page.base.BaseFragment;
 
 /**
  * User: Geek_Soledad(msdx.android@qq.com)

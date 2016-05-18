@@ -1,4 +1,4 @@
-package com.wanshi.wanshi.page.main;
+package com.wanshi.app.page.main;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,13 +23,13 @@ import com.avos.avoscloud.okhttp.OkHttpClient;
 import com.avos.avoscloud.okhttp.Request;
 import com.avos.avoscloud.okhttp.Response;
 import com.orhanobut.logger.Logger;
-import com.wanshi.wanshi.adapter.ListLiveAdapter;
-import com.wanshi.wanshi.R;
-import com.wanshi.wanshi.bean.Room;
-import com.wanshi.wanshi.page.base.BaseFragment;
-import com.wanshi.wanshi.page.video.LiveVideoViewPlayingActivity;
-import com.wanshi.wanshi.widget.refresh.BGAMoocStyleRefreshViewHolder;
-import com.wanshi.wanshi.widget.refresh.DividerGridItemDecoration;
+import com.wanshi.app.R;
+import com.wanshi.app.adapter.ListLiveAdapter;
+import com.wanshi.app.bean.Room;
+import com.wanshi.app.page.base.BaseFragment;
+import com.wanshi.app.page.video.RecordVideoViewPlayingActivity;
+import com.wanshi.app.widget.refresh.BGAMoocStyleRefreshViewHolder;
+import com.wanshi.app.widget.refresh.DividerGridItemDecoration;
 
 import org.kymjs.kjframe.utils.KJLoger;
 
@@ -45,10 +45,11 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
  * Time: 09:01
  * FIXME
  */
-public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
+public class ListRecordFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
 
-    private final static String TAG = ListLiveFragment.class.getSimpleName();
+    private final static String TAG = ListRecordFragment.class.getSimpleName();
     private static Activity mContext;
+    private TextView textTitleBar;
     private RecyclerView recyclerView;
     private ListLiveAdapter adapter;
     private BGARefreshLayout mSwipeRefreshWidget;
@@ -60,7 +61,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_live, null, false);
         mContext = getActivity();
-        ((TextView) view.findViewById(R.id.textTitleBar)).setText("正在直播");
+        ((TextView) view.findViewById(R.id.textTitleBar)).setText("精彩回放");
         mSwipeRefreshWidget = (BGARefreshLayout) view.findViewById(R.id.swipe_refresh_widget);
         recyclerView = (RecyclerView) view.findViewById(R.id.gridviewLive);
 
@@ -80,7 +81,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                 try {
                     String url = URLDecoder.decode((data).getUrlStreamAddr(), "utf-8");
 
-                    Intent intent = new Intent(getActivity(), LiveVideoViewPlayingActivity.class);
+                    Intent intent = new Intent(getActivity(), RecordVideoViewPlayingActivity.class);
                     intent.setData(Uri.parse(url));
                     intent.putExtra("conversationId",data.getConversationId());
                     startActivity(intent);
@@ -105,6 +106,24 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         refreshViewHolder.setUltimateColor(R.color.colorAccent);
         // 设置下拉刷新和上拉加载更多的风格
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
+
+
+//        // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项  -------------START
+//        // 设置正在加载更多时不显示加载更多控件
+//        // mRefreshLayout.setIsShowLoadingMoreView(false);
+//        // 设置正在加载更多时的文本
+//        refreshViewHolder.setLoadingMoreText(loadingMoreText);
+//        // 设置整个加载更多控件的背景颜色资源id
+//        refreshViewHolder.setLoadMoreBackgroundColorRes(loadMoreBackgroundColorRes);
+//        // 设置整个加载更多控件的背景drawable资源id
+//        refreshViewHolder.setLoadMoreBackgroundDrawableRes(loadMoreBackgroundDrawableRes);
+//        // 设置下拉刷新控件的背景颜色资源id
+//        refreshViewHolder.setRefreshViewBackgroundColorRes(refreshViewBackgroundColorRes);
+//        // 设置下拉刷新控件的背景drawable资源id
+//        refreshViewHolder.setRefreshViewBackgroundDrawableRes(refreshViewBackgroundDrawableRes);
+//        // 设置自定义头部视图（也可以不用设置）     参数1：自定义头部视图（例如广告位）， 参数2：上拉加载更多是否可用
+//        mRefreshLayout.setCustomHeaderView(mBanner, false);
+        // 可选配置  -------------END
     }
 
 

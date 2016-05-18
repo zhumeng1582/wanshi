@@ -12,9 +12,9 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.wanshi.wanshi"
+        applicationId "com.wanshi.app"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -29,14 +29,16 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.3.1'
-    compile 'com.android.support:recyclerview-v7:23.3.1'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/avoscloud-sdk-v3.13.jar')
     compile files('libs/fastjson.jar')
     compile files('libs/httpmime-4.2.4.jar')
     compile files('libs/okhttp-2.6.0-leancloud.jar')
     compile files('libs/okio-1.6.0-leancloud.jar')
+    compile files('libs/qq.sdk.1.6.1.jar')
+    compile files('libs/weibo.sdk.android.sso.3.0.1-leancloud.jar')
     compile files('libs/avoscloud-push-v3.13.jar')
     compile files('libs/avoscloud-feedback-v3.13.jar')
     compile files('libs/protobuf-java-2.6.1.jar')

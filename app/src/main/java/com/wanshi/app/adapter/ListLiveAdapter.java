@@ -1,4 +1,4 @@
-package com.wanshi.wanshi.adapter;
+package com.wanshi.app.adapter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.wanshi.wanshi.R;
-import com.wanshi.wanshi.bean.Room;
+import com.wanshi.app.R;
+import com.wanshi.app.bean.Room;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

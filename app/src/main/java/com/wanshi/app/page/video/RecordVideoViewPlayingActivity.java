@@ -1,4 +1,4 @@
-package com.wanshi.wanshi.page.video;
+package com.wanshi.app.page.video;
 
 import android.app.Activity;
 import android.content.Context;
@@ -39,8 +39,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
 import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
-import com.wanshi.wanshi.R;
-
+import com.wanshi.app.R;
 import org.kymjs.chat.ChatActivity;
 import org.kymjs.chat.OnOperationListener;
 import org.kymjs.chat.adapter.ChatAdapter;

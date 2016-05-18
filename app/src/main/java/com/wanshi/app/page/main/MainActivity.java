@@ -1,4 +1,4 @@
-package com.wanshi.wanshi.page.main;
+package com.wanshi.app.page.main;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,10 +7,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.githang.viewpagerindicator.IconTabPageIndicator;
 import com.githang.viewpagerindicator.IconPagerAdapter;
-import com.wanshi.wanshi.R;
-import com.wanshi.wanshi.page.base.BaseFragment;
+import com.githang.viewpagerindicator.IconTabPageIndicator;
+import com.wanshi.app.R;
+import com.wanshi.app.page.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wanshi.wanshi" >
+    package="com.wanshi.app" >
 
     <!-- 基础模块（必须加入以下声明）START -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,21 +21,25 @@
         android:theme="@style/AppTheme"
         android:supportsRtl="true" >
         <activity android:name=".page.main.MainActivity" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <activity android:name=".page.video.LiveVideoViewPlayingActivity" />
+        <activity android:name=".page.video.RecordVideoViewPlayingActivity" />
+
+        <activity android:name=".page.me.QQLoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="org.kymjs.chat.ChatActivity" >
 
-        </activity>
-        <activity android:name=".page.video.LiveVideoViewPlayingActivity" >
-        </activity>
 
-        <activity android:name=".page.video.RecordVideoViewPlayingActivity" >
-        </activity>
-
+        <activity android:name="org.kymjs.chat.ChatActivity" />
         <!-- &lt;!&ndash; 实时通信模块、推送（若使用该功能，需添加以下声明）START &ndash;&gt; -->
         <service android:name="com.avos.avoscloud.PushService" />
         <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver" >
@@ -50,6 +54,17 @@
         <activity android:name="com.avos.avoscloud.feedback.ThreadActivity" >
         </activity>
         <!-- 反馈组件 END -->
+
+        <activity android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent1105334255" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

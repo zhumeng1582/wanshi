@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wanshi.wanshi.widget.refresh;
+package com.wanshi.app.widget.refresh;
 
 import android.content.Context;
 import android.graphics.Color;

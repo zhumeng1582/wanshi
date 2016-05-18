@@ -1,4 +1,4 @@
-package com.wanshi.wanshi.bean;
+package com.wanshi.app.bean;
 
 /**
  * Created by 张超 on 2016/3/5.

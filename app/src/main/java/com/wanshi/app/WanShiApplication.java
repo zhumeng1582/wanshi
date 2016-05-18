@@ -1,4 +1,4 @@
-package com.wanshi.wanshi;
+package com.wanshi.app;
 
 import android.app.Application;
 import android.util.Log;
@@ -12,9 +12,6 @@ import com.avos.avoscloud.im.v2.AVIMMessageHandler;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.avos.avoscloud.okhttp.OkHttpClient;
-import com.avos.avoscloud.okhttp.Request;
-import com.avos.avoscloud.okhttp.Response;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class WanShiApplication  extends Application {
