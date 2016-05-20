@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity {
 
         ListLiveFragment liveFragment = new ListLiveFragment();
         liveFragment.setTitle("直播");
-        liveFragment.setIconId(R.drawable.tab_record_selector);
+        liveFragment.setIconId(R.drawable.tab_live_selector);
         fragments.add(liveFragment);
 
         ListRecordFragment recordFragment = new ListRecordFragment();

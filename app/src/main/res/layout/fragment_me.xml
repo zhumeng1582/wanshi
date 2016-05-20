@@ -3,8 +3,87 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/background">
     <include
         android:id="@+id/titlebarMain"
         layout="@layout/view_title_bar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/llIndividualAccount"
+            style="@style/style_more_item"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                style="@style/style_more_context_text"
+                android:text="个人账户" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llSetting"
+            style="@style/style_more_item"
+            android:orientation="vertical">
+            <TextView
+                style="@style/style_more_context_text"
+                android:text="设置"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llFeedback"
+            style="@style/style_more_item"
+            android:orientation="vertical">
+            <TextView
+                style="@style/style_more_context_text"
+                android:text="意见反馈"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llHelp"
+            style="@style/style_more_item"
+            android:orientation="vertical">
+            <TextView
+                style="@style/style_more_context_text"
+                android:text="帮助中心"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llAboutUs"
+            style="@style/style_more_item"
+            android:orientation="vertical">
+            <TextView
+                style="@style/style_more_context_text"
+                android:text="关于我们"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llCustomService"
+            style="@style/style_more_item"
+            android:orientation="vertical">
+            <TextView
+                style="@style/style_more_context_text"
+                android:text="联系我们"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

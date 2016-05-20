@@ -14,8 +14,6 @@ import com.avos.sns.SNSException;
 import com.avos.sns.SNSType;
 import com.wanshi.app.page.base.BaseActivity;
 
-import org.kymjs.kjframe.utils.KJLoger;
-
 /**
  * 项目名称：蜂鸟金融
  * 类描述：
@@ -38,14 +36,18 @@ public class QQLoginActivity extends BaseActivity {
             @Override
             public void done(SNSBase object, SNSException e) {
                 if (e == null) {
-                    KJLoger.log(TAG, "登录成功");
+                    logd("登录成功");
                     SNS.loginWithAuthData(object.userInfo(), new LogInCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
-                            KJLoger.log(TAG, "done: "+avUser.getUsername());
+                            logd("注册用户名: "+avUser.getUsername());
+                            finish();
                         }
                     });
 
+                }else{
+                    e.printStackTrace();
+                    logd("登录失败");
                 }
             }
         };

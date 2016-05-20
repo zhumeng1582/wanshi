@@ -1,6 +1,5 @@
 package com.wanshi.app.page.video;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,26 +12,16 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
 import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
@@ -40,23 +29,9 @@ import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.wanshi.app.R;
-import org.kymjs.chat.ChatActivity;
-import org.kymjs.chat.OnOperationListener;
-import org.kymjs.chat.adapter.ChatAdapter;
-import org.kymjs.chat.bean.Emojicon;
-import org.kymjs.chat.bean.Faceicon;
-import org.kymjs.chat.emoji.DisplayRules;
-import org.kymjs.chat.widget.KJChatKeyboard;
-import org.kymjs.kjframe.KJActivity;
-import org.kymjs.kjframe.ui.ViewInject;
-import org.kymjs.kjframe.utils.FileUtils;
-import org.kymjs.kjframe.utils.KJLoger;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import org.kymjs.kjframe.KJActivity;
+import org.kymjs.kjframe.utils.KJLoger;
 
 public class RecordVideoViewPlayingActivity extends KJActivity implements OnPreparedListener, OnCompletionListener,
         OnErrorListener, OnInfoListener, OnPlayingBufferCacheListener {
@@ -69,24 +44,16 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
      */
     private String AK = "381715e304f04aceb2d7eb274cad3e27";   //请录入您的AK !!!
 
-    private String mVideoSource = null;
+    private String mVideoSource;
 
-    private ImageButton mPlaybtn = null;
-    private ImageButton mPrebtn = null;
-    private ImageButton mForwardbtn = null;
+    private ImageButton mPlaybtn;
 
-    private LinearLayout mController = null;
+    private LinearLayout mController;
 
-    private SeekBar mProgress = null;
-    private TextView mDuration = null;
-    private TextView mCurrPostion = null;
+    private SeekBar mProgress;
+    private TextView mDuration;
+    private TextView mCurrPostion;
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD = 0x1;
-
-    private KJChatKeyboard box;
-    private ListView mRealListView;
-
-    List<org.kymjs.chat.bean.Message> datas = new ArrayList<org.kymjs.chat.bean.Message>();
-    private ChatAdapter adapter;
 
     /**
      * 记录播放位置
@@ -102,18 +69,18 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     private PLAYER_STATUS mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
 
-    private BVideoView mVV = null;
+    private BVideoView mVV;
 
     private EventHandler mEventHandler;
     private HandlerThread mHandlerThread;
 
     private final Object SYNC_Playing = new Object();
 
-    private WakeLock mWakeLock = null;
+    private WakeLock mWakeLock;
     private static final String POWER_LOCK = "LiveVideoViewPlayingActivity";
 
     private boolean mIsHwDecode = false;
-    private String conversationId = null;
+//    private String conversationId;
 
     private final int EVENT_PLAY = 0;
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
@@ -201,7 +168,7 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     @Override
     public void setRootView() {
-        setContentView(R.layout.activity_record_playing);
+        setContentView(R.layout.activity_playing_record);
     }
 
     @Override
@@ -222,13 +189,7 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
             }
         }
 
-        conversationId = getIntent().getStringExtra("conversationId");
-        if (!TextUtils.isEmpty(conversationId)) {
-            addConversation();
-        }else{
-            findViewById(R.id.llConversation).setVisibility(View.GONE);
 
-        }
 
         initUI();
 
@@ -239,68 +200,18 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
                 Process.THREAD_PRIORITY_BACKGROUND);
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
-
-        box = (KJChatKeyboard) findViewById(org.kymjs.chat.R.id.chat_msg_input_box);
-        mRealListView = (ListView) findViewById(org.kymjs.chat.R.id.chat_listview);
-
-        mRealListView.setSelector(android.R.color.transparent);
-        initMessageInputToolBox();
-        initListView();
     }
-
-    private void addConversation() {
-        AVIMClient tom = AVIMClient.getInstance(name);
-        tom.open(new AVIMClientCallback() {
-
-            @Override
-            public void done(AVIMClient client, AVIMException e) {
-                if (e == null) {
-                    //登录成功
-                    conv = client.getConversation(conversationId);
-                    conv.join(new AVIMConversationCallback() {
-                        @Override
-                        public void done(AVIMException e) {
-                            if (e == null) {
-                                //加入成功
-                                KJLoger.log(TAG, "加入成功聊天室,id:" + conversationId);
-                                conv.queryMessages(10, new AVIMMessagesQueryCallback() {
-                                    @Override
-                                    public void done(List<AVIMMessage> messages, AVIMException e) {
-                                        if (e == null) {
-                                            for (AVIMMessage item : messages) {
-                                                org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,
-                                                        org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, item.getFrom(), "avatar", "Jerry", "avatar",
-                                                        ((AVIMTextMessage) item).getText(), name.equals(item.getFrom()), true, new Date(item.getTimestamp()));
-                                                datas.add(message);
-                                                adapter.refresh(datas);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-
-
-        });
-
-    }
-
 
     /**
      * 初始化界面
      */
     private void initUI() {
-        mPlaybtn = (ImageButton) findViewById(R.id.play_btn);
-        mPrebtn = (ImageButton) findViewById(R.id.pre_btn);
-        mForwardbtn = (ImageButton) findViewById(R.id.next_btn);
+        mPlaybtn = (ImageButton) findViewById(R.id.btnPlay);
         mController = (LinearLayout) findViewById(R.id.controlbar);
 
         mProgress = (SeekBar) findViewById(R.id.media_progress);
         mDuration = (TextView) findViewById(R.id.time_total);
-        mCurrPostion = (TextView) findViewById(R.id.time_current);
+        mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
 
 
         registerCallbackForControl();
@@ -338,13 +249,13 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
                 // TODO Auto-generated method stub
 
                 if (mVV.isPlaying()) {
-                    mPlaybtn.setImageResource(R.drawable.play_btn_style);
+                    mPlaybtn.setImageResource(R.drawable.btn_style_play);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
-                    mPlaybtn.setImageResource(R.drawable.pause_btn_style);
+                    mPlaybtn.setImageResource(R.drawable.btn_style_pause);
                     /**
                      * 继续播放
                      */
@@ -354,40 +265,10 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
             }
         });
 
-        /**
-         * 实现切换示例
-         */
-        mPrebtn.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                /**
-                 * 如果已经播放了，等待上一次播放结束
-                 */
-                if (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE) {
-                    mVV.stopPlayback();
-                }
-
-                /**
-                 * 发起一次新的播放任务
-                 */
-                if (mEventHandler.hasMessages(EVENT_PLAY))
-                    mEventHandler.removeMessages(EVENT_PLAY);
-                mEventHandler.sendEmptyMessage(EVENT_PLAY);
-            }
-        });
-
-
-        mForwardbtn.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-
-            }
-        });
 
         OnSeekBarChangeListener osbc1 = new OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                // TODO Auto-generated method stub
-                //KJLoger.debug(TAG, "progress: " + progress);
                 updateTextViewWithTimeFormat(mCurrPostion, progress);
             }
 
@@ -418,7 +299,7 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
         int hh = second / 3600;
         int mm = second % 3600 / 60;
         int ss = second % 60;
-        String strTemp = null;
+        String strTemp;
         if (0 != hh) {
             strTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
         } else {
@@ -566,124 +447,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
     }
 
-    private void initMessageInputToolBox() {
-        box.setOnOperationListener(new OnOperationListener() {
-            @Override
-            public void send(final String content) {
-
-                final AVIMTextMessage msg = new AVIMTextMessage();
-                msg.setText(content);
-                conv.sendMessage(msg, new AVIMConversationCallback() {
-
-                    @Override
-                    public void done(AVIMException e) {
-                        if (e == null) {
-                            org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT, org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                                    name, "avatar", "Jerry",
-                                    "avatar", content, true, true, new Date());
-                            datas.add(message);
-                            adapter.refresh(datas);
-
-                        } else {
-                            org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT, org.kymjs.chat.bean.Message.MSG_STATE_FAIL,
-                                    name, "avatar", "Jerry",
-                                    "avatar", content, true, true, new Date());
-                            datas.add(message);
-                            adapter.refresh(datas);
-                        }
-                    }
-                });
-
-            }
-
-            @Override
-            public void selectedFace(Faceicon content) {
-                org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_FACE, org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                        "Tom", "avatar", "Jerry", "avatar", content.getPath(), true, true, new
-                        Date());
-                datas.add(message);
-                adapter.refresh(datas);
-                createReplayMsg(message);
-            }
-
-            @Override
-            public void selectedEmoji(Emojicon emoji) {
-                box.getEditTextBox().append(emoji.getValue());
-            }
-
-            @Override
-            public void selectedBackSpace(Emojicon back) {
-                DisplayRules.backspace(box.getEditTextBox());
-            }
-
-            @Override
-            public void selectedFunction(int index) {
-                switch (index) {
-                    case 0:
-                        goToAlbum();
-                        break;
-                    case 1:
-                        ViewInject.toast("跳转相机");
-                        break;
-                }
-            }
-        });
-
-        List<String> faceCagegory = new ArrayList<>();
-//        File faceList = FileUtils.getSaveFolder("chat");
-        File faceList = new File("");
-        if (faceList.isDirectory()) {
-            File[] faceFolderArray = faceList.listFiles();
-            for (File folder : faceFolderArray) {
-                if (!folder.isHidden()) {
-                    faceCagegory.add(folder.getAbsolutePath());
-                }
-            }
-        }
-
-        box.setFaceData(faceCagegory);
-        mRealListView.setOnTouchListener(getOnTouchListener());
-    }
-
-    private void initListView() {
-
-        adapter = new ChatAdapter(this, datas, getOnChatItemClickListener());
-        mRealListView.setAdapter(adapter);
-    }
-
-    private void createReplayMsg(org.kymjs.chat.bean.Message message) {
-        final org.kymjs.chat.bean.Message reMessage = new org.kymjs.chat.bean.Message(message.getType(), org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, "Tom",
-                "avatar", "Jerry", "avatar", message.getType() == org.kymjs.chat.bean.Message.MSG_TYPE_TEXT ? "返回:"
-                + message.getContent() : message.getContent(), false,
-                true, new Date());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000 * (new Random().nextInt(3) + 1));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            datas.add(reMessage);
-                            adapter.refresh(datas);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && box.isShow()) {
-            box.hideLayout();
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
 
     /**
      * 跳转到选择相册界面
@@ -704,62 +467,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
                     REQUEST_CODE_GETIMAGE_BYSDCARD);
         }
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if (requestCode == REQUEST_CODE_GETIMAGE_BYSDCARD) {
-            Uri dataUri = data.getData();
-            if (dataUri != null) {
-                File file = FileUtils.uri2File(aty, dataUri);
-                org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO, org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                        "Tom", "avatar", "Jerry",
-                        "avatar", file.getAbsolutePath(), true, true, new Date());
-                datas.add(message);
-                adapter.refresh(datas);
-            }
-        }
-    }
-
-    /**
-     * 若软键盘或表情键盘弹起，点击上端空白处应该隐藏输入法键盘
-     *
-     * @return 会隐藏输入法键盘的触摸事件监听器
-     */
-    private View.OnTouchListener getOnTouchListener() {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                box.hideLayout();
-                box.hideKeyboard(aty);
-                return false;
-            }
-        };
-    }
-
-    /**
-     * @return 聊天列表内存点击事件监听器
-     */
-    private ChatActivity.OnChatItemClickListener getOnChatItemClickListener() {
-        return new ChatActivity.OnChatItemClickListener() {
-            @Override
-            public void onPhotoClick(int position) {
-                KJLoger.debug(datas.get(position).getContent() + "点击图片的");
-                ViewInject.toast(aty, datas.get(position).getContent() + "点击图片的");
-            }
-
-            @Override
-            public void onTextClick(int position) {
-            }
-
-            @Override
-            public void onFaceClick(int position) {
-            }
-        };
     }
 
 }

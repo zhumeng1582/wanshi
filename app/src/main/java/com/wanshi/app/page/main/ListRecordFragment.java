@@ -52,8 +52,8 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
         recyclerView.addItemDecoration(new DividerGridItemDecoration(mContext));
         adapter = new ListLiveAdapter(getActivity());
         recyclerView.setAdapter(adapter);
-        recyclerView.setEmptyView(empty);
-        empty.showEmpty();
+        recyclerView.setEmptyView(mSwipeRefreshWidget,empty);
+        empty.showLoading();
         adapter.setOnItemClickListener(new ListLiveAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, Room data) {
@@ -144,6 +144,7 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
                     });
                 }
                 mSwipeRefreshWidget.endRefreshing();
+                empty.showEmpty();
             }
         });
 
@@ -176,6 +177,7 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
                         }
                     });
                 }
+                empty.showEmpty();
                 mSwipeRefreshWidget.endLoadingMore();
             }
         });

@@ -1,12 +1,14 @@
 package com.wanshi.app.widget.emptyview;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
 public class EmptyRecyclerView extends RecyclerView {
 
+    private View parent;
     private View emptyView;
 
     final private AdapterDataObserver observer = new AdapterDataObserver() {
@@ -44,7 +46,7 @@ public class EmptyRecyclerView extends RecyclerView {
             final boolean emptyViewVisible =
                     getAdapter().getItemCount() == 0;
             emptyView.setVisibility(emptyViewVisible ? VISIBLE : GONE);
-            setVisibility(emptyViewVisible ? GONE : VISIBLE);
+            parent.setVisibility(emptyViewVisible ? GONE : VISIBLE);
         }
     }
 
@@ -62,7 +64,8 @@ public class EmptyRecyclerView extends RecyclerView {
         checkIfEmpty();
     }
 
-    public void setEmptyView(View emptyView) {
+    public void setEmptyView(@Nullable View parent, View emptyView) {
+        this.parent = parent;
         this.emptyView = emptyView;
         checkIfEmpty();
     }

@@ -11,4 +11,24 @@
         <item name="iconWidth">28dp</item>
         <item name="iconHeight">28dp</item>
     </style>
+    <style name="style_more_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/item_background</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="style_more_context_text">
+        <item name="android:paddingRight">@dimen/main_padding</item>
+        <item name="android:paddingLeft">@dimen/main_padding</item>
+        <item name="android:paddingTop">@dimen/me_item_paddingTop</item>
+        <item name="android:paddingBottom">@dimen/me_item_paddingTop</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+        <item name="android:drawableRight">@mipmap/arrow_right</item>
+        <item name="android:drawableBottom">@color/divider_color</item>
+    </style>
 </resources>

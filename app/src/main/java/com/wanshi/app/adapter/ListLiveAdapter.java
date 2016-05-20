@@ -55,7 +55,7 @@ public class ListLiveAdapter extends RecyclerView.Adapter<ListLiveAdapter.Holder
     public void onBindViewHolder(Holder holder, int position)
     {
 
-        holder.textRoomName.setText(listRoom.get(position).getRoomName()+"("+listRoom.get(position).getConversationId()+")");
+        holder.textRoomName.setText(listRoom.get(position).getRoomName());
         holder.imageRoomIcon.setImageURI(Uri.parse(listRoom.get(position).getUrlRoomIcon()));
         holder.itemView.setTag(listRoom.get(position));
     }

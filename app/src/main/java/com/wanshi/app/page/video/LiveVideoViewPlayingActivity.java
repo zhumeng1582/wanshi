@@ -21,7 +21,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -63,29 +62,21 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     private final String TAG = "LiveVideoViewPlayingActivity";
 
-    /**
-     * 您的AK
-     * 请到http://console.bce.baidu.com/iam/#/iam/accesslist获取
-     */
     private String AK = "381715e304f04aceb2d7eb274cad3e27";   //请录入您的AK !!!
 
     private String mVideoSource = null;
 
     private ImageButton mPlaybtn = null;
-//    private ImageButton mPrebtn = null;
-//    private ImageButton mForwardbtn = null;
 
     private LinearLayout mController = null;
 
-    private SeekBar mProgress = null;
-    private TextView mDuration = null;
     private TextView mCurrPostion = null;
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD = 0x1;
 
     private KJChatKeyboard box;
     private ListView mRealListView;
 
-    List<org.kymjs.chat.bean.Message> datas = new ArrayList<org.kymjs.chat.bean.Message>();
+    List<org.kymjs.chat.bean.Message> datas = new ArrayList<>();
     private ChatAdapter adapter;
 
     private String avatarFrom = "http://www.iconpng.com/png/possible_android_4.5/chrome.png";
@@ -132,45 +123,27 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case EVENT_PLAY:
-                    /**
-                     * 如果已经播放了，等待上一次播放结束
-                     */
+                     // 如果已经播放了，等待上一次播放结束
                     if (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE) {
                         synchronized (SYNC_Playing) {
                             try {
                                 SYNC_Playing.wait();
                                 KJLoger.debug(TAG, "wait player status to idle");
                             } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
                     }
-
-                    /**
-                     * 设置播放url
-                     */
                     mVV.setVideoPath(mVideoSource);
-
-                    /**
-                     * 续播，如果需要如此
-                     */
+                    //续播，如果需要如此
                     if (mLastPos > 0) {
-
                         mVV.seekTo(mLastPos);
                         mLastPos = 0;
                     }
-
-                    /**
-                     * 显示或者隐藏缓冲提示
-                     */
+                    //显示或者隐藏缓冲提示
                     mVV.showCacheInfo(true);
-
-                    /**
-                     * 开始播放
-                     */
+                    //开始播放
                     mVV.start();
-
                     mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
                     break;
                 default:
@@ -182,18 +155,10 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     Handler mUIHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                /**
-                 * 更新进度及时间
-                 */
+                //更新进度及时间
                 case UI_EVENT_UPDATE_CURRPOSITION:
                     int currPosition = mVV.getCurrentPosition();
-                    int duration = mVV.getDuration();
                     updateTextViewWithTimeFormat(mCurrPostion, currPosition);
-                    updateTextViewWithTimeFormat(mDuration, duration);
-                    mProgress.setMax(duration);
-                    if (mVV.isPlaying()) {
-                        mProgress.setProgress(currPosition);
-                    }
                     mUIHandler.sendEmptyMessageDelayed(UI_EVENT_UPDATE_CURRPOSITION, 200);
                     break;
                 default:
@@ -204,7 +169,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     @Override
     public void setRootView() {
-        setContentView(R.layout.activity_live_playing);
+        setContentView(R.layout.activity_playing_live);
     }
 
     @Override
@@ -227,10 +192,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
         conversationId = getIntent().getStringExtra("conversationId");
         if (!TextUtils.isEmpty(conversationId)) {
-            addConversation();
+            joinConversation();
         }else{
             findViewById(R.id.llConversation).setVisibility(View.GONE);
-
         }
 
         initUI();
@@ -243,15 +207,15 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
 
-        box = (KJChatKeyboard) findViewById(org.kymjs.chat.R.id.chat_msg_input_box);
-        mRealListView = (ListView) findViewById(org.kymjs.chat.R.id.chat_listview);
+        box = (KJChatKeyboard) findViewById(R.id.chat_msg_input_box);
+        mRealListView = (ListView) findViewById(R.id.chat_listview);
 
         mRealListView.setSelector(android.R.color.transparent);
         initMessageInputToolBox();
         initListView();
     }
 
-    private void addConversation() {
+    private void joinConversation() {
         AVIMClient tom = AVIMClient.getInstance(name);
         tom.open(new AVIMClientCallback() {
 
@@ -296,11 +260,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
      * 初始化界面
      */
     private void initUI() {
-        mPlaybtn = (ImageButton) findViewById(R.id.play_btn);
+        mPlaybtn = (ImageButton) findViewById(R.id.btnPlay);
         mController = (LinearLayout) findViewById(R.id.controlbar);
-        mProgress = (SeekBar) findViewById(R.id.media_progress);
-        mDuration = (TextView) findViewById(R.id.time_total);
-        mCurrPostion = (TextView) findViewById(R.id.time_current);
+        mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
 
         registerCallbackForControl();
 
@@ -334,19 +296,13 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     private void registerCallbackForControl() {
         mPlaybtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 if (mVV.isPlaying()) {
-                    mPlaybtn.setImageResource(R.drawable.play_btn_style);
-                    /**
-                     * 暂停播放
-                     */
+                    mPlaybtn.setImageResource(R.drawable.btn_style_play);
+                    //暂停播放
                     mVV.pause();
                 } else {
-                    mPlaybtn.setImageResource(R.drawable.pause_btn_style);
-                    /**
-                     * 继续播放
-                     */
+                    mPlaybtn.setImageResource(R.drawable.btn_style_pause);
+                    //继续播放
                     mVV.resume();
                 }
 
@@ -369,11 +325,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
-        /**
-         * 在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
-         */
+        //在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
             mLastPos = mVV.getCurrentPosition();
             mVV.stopPlayback();
@@ -382,15 +335,12 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
         KJLoger.debug(TAG, "onResume");
         if (null != mWakeLock && (!mWakeLock.isHeld())) {
             mWakeLock.acquire();
         }
-        /**
-         * 发起一次播放任务,当然您不一定要在这发起
-         */
+        //发起一次播放任务,当然您不一定要在这发起
         mEventHandler.sendEmptyMessage(EVENT_PLAY);
     }
 
@@ -399,8 +349,6 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-        // TODO Auto-generated method stub
         if (event.getAction() == MotionEvent.ACTION_DOWN)
             mTouchTime = System.currentTimeMillis();
         else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -431,9 +379,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /**
-         * 退出后台事件处理线程
-         */
+        //退出后台事件处理线程
         mHandlerThread.quit();
     }
 
@@ -441,14 +387,10 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     public boolean onInfo(int what, int extra) {
         // TODO Auto-generated method stub
         switch (what) {
-            /**
-             * 开始缓冲
-             */
+            //开始缓冲
             case BVideoView.MEDIA_INFO_BUFFERING_START:
                 break;
-            /**
-             * 结束缓冲
-             */
+            //结束缓冲
             case BVideoView.MEDIA_INFO_BUFFERING_END:
                 break;
             default:
@@ -457,21 +399,15 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         return true;
     }
 
-    /**
-     * 当前缓冲的百分比， 可以配合onInfo中的开始缓冲和结束缓冲来显示百分比到界面
-     */
+    //当前缓冲的百分比， 可以配合onInfo中的开始缓冲和结束缓冲来显示百分比到界面
     @Override
     public void onPlayingBufferCache(int percent) {
-        // TODO Auto-generated method stub
 
     }
 
-    /**
-     * 播放出错
-     */
+    //播放出错
     @Override
     public boolean onError(int what, int extra) {
-        // TODO Auto-generated method stub
         KJLoger.debug(TAG, "onError");
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
@@ -481,12 +417,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         return true;
     }
 
-    /**
-     * 播放完成
-     */
+    //播放完成
     @Override
     public void onCompletion() {
-        // TODO Auto-generated method stub
         KJLoger.debug(TAG, "onCompletion");
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
@@ -495,9 +428,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         mUIHandler.removeMessages(UI_EVENT_UPDATE_CURRPOSITION);
     }
 
-    /**
-     * 准备播放就绪
-     */
+    //准备播放就绪
     @Override
     public void onPrepared() {
         // TODO Auto-generated method stub

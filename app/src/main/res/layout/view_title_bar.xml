@@ -10,5 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_larger"
         android:text="正在直播"/>
 </LinearLayout>

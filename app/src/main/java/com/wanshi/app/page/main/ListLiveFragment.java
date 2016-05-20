@@ -51,10 +51,10 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         recyclerView.addItemDecoration(new DividerGridItemDecoration(mContext));
 
-        adapter = new ListLiveAdapter(getActivity());
+        adapter = new ListLiveAdapter(mContext);
+        empty.showLoading();
+        recyclerView.setEmptyView(mSwipeRefreshWidget,empty);
         recyclerView.setAdapter(adapter);
-        recyclerView.setEmptyView(empty);
-        empty.showEmpty();
         adapter.setOnItemClickListener(new ListLiveAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, Room data) {
@@ -83,7 +83,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGAMoocStyleRefreshViewHolder refreshViewHolder = new BGAMoocStyleRefreshViewHolder(mContext, true);
         refreshViewHolder.setOriginalImage(R.mipmap.ic_launcher);
-        refreshViewHolder.setUltimateColor(R.color.colorAccent);
+        refreshViewHolder.setUltimateColor(R.color.colorPrimary);
         // 设置下拉刷新和上拉加载更多的风格
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
     }
@@ -127,6 +127,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                     });
                 }
                 mSwipeRefreshWidget.endRefreshing();
+                empty.showEmpty();
             }
         });
 
@@ -162,6 +163,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                     });
                 }
                 mSwipeRefreshWidget.endLoadingMore();
+                empty.showEmpty();
             }
         });
         return true;
