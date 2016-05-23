@@ -1,9 +1,7 @@
 package com.wanshi.app.page.video;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -11,7 +9,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
-import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -105,7 +102,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
                                 SYNC_Playing.wait();
                                 KJLoger.debug(TAG, "wait player status to idle");
                             } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
@@ -246,8 +242,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
     private void registerCallbackForControl() {
         mPlaybtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 if (mVV.isPlaying()) {
                     mPlaybtn.setImageResource(R.drawable.btn_style_play);
                     /**
@@ -273,7 +267,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 /**
                  * SeekBar开始seek时停止更新
                  */
@@ -281,7 +274,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 int iseekPos = seekBar.getProgress();
                 /**
                  * SeekBark完成seek时执行seekTo操作并更新界面
@@ -310,7 +302,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         /**
          * 在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
@@ -323,7 +314,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
         KJLoger.debug(TAG, "onResume");
         if (null != mWakeLock && (!mWakeLock.isHeld())) {
@@ -447,26 +437,5 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
     }
 
-
-    /**
-     * 跳转到选择相册界面
-     */
-    private void goToAlbum() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < 19) {
-            intent = new Intent();
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "选择图片"),
-                    REQUEST_CODE_GETIMAGE_BYSDCARD);
-        } else {
-            intent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "选择图片"),
-                    REQUEST_CODE_GETIMAGE_BYSDCARD);
-        }
-
-    }
 
 }

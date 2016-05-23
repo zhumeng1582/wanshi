@@ -27,9 +27,14 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.AVIMMessageManager;
+import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
@@ -66,7 +71,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     private String mVideoSource = null;
     private ImageButton mPlaybtn = null;
+    private ImageButton btnFullScreen = null;
     private LinearLayout mController = null;
+    private LinearLayout llConversation = null;
     private TextView mCurrPostion = null;
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD = 0x1;
 
@@ -108,7 +115,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     private final int EVENT_PLAY = 0;
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
-    private AVIMConversation conv;
+    private AVIMConversation conversation;
+    private AVIMClient tom;
     private String name ="游客";
 
     class EventHandler extends Handler {
@@ -211,21 +219,21 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     }
 
     private void joinConversation() {
-        AVIMClient tom = AVIMClient.getInstance(name);
+        tom = AVIMClient.getInstance(name);
         tom.open(new AVIMClientCallback() {
 
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 if (e == null) {
                     //登录成功
-                    conv = client.getConversation(conversationId);
-                    conv.join(new AVIMConversationCallback() {
+                    conversation = client.getConversation(conversationId);
+                    conversation.join(new AVIMConversationCallback() {
                         @Override
                         public void done(AVIMException e) {
                             if (e == null) {
                                 //加入成功
                                 KJLoger.log(TAG, "加入成功聊天室,id:" + conversationId);
-                                conv.queryMessages(10, new AVIMMessagesQueryCallback() {
+                                conversation.queryMessages(10, new AVIMMessagesQueryCallback() {
                                     @Override
                                     public void done(List<AVIMMessage> messages, AVIMException e) {
                                         if (e == null) {
@@ -247,6 +255,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
 
         });
+        AVIMMessageManager.registerMessageHandler(AVIMTextMessage.class,new CustomAVIMMessageHandler());
 
     }
 
@@ -256,7 +265,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
      */
     private void initUI() {
         mPlaybtn = (ImageButton) findViewById(R.id.btnPlay);
+        btnFullScreen = (ImageButton) findViewById(R.id.btnFullScreen);
         mController = (LinearLayout) findViewById(R.id.controlbar);
+        llConversation = (LinearLayout) findViewById(R.id.llConversation);
         mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
 
         registerCallbackForControl();
@@ -301,6 +312,16 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                     mVV.resume();
                 }
 
+            }
+        });
+        btnFullScreen.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(llConversation.getVisibility() == View.VISIBLE){
+                    llConversation.setVisibility(View.GONE);
+                }else{
+                    llConversation.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -376,6 +397,12 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         super.onDestroy();
         //退出后台事件处理线程
         mHandlerThread.quit();
+        conversation.quit(new AVIMConversationCallback() {
+            @Override
+            public void done(AVIMException e) {
+                KJLoger.debug(TAG, "退出聊天室");
+            }
+        });
     }
 
     @Override
@@ -439,7 +466,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
                 final AVIMTextMessage msg = new AVIMTextMessage();
                 msg.setText(content);
-                conv.sendMessage(msg, new AVIMConversationCallback() {
+                conversation.sendMessage(msg, new AVIMConversationCallback() {
 
                     @Override
                     public void done(AVIMException e) {
@@ -628,5 +655,36 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             }
         };
     }
+
+    public  class CustomAVIMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
+        //接收到消息后的处理逻辑
+
+        @Override
+        public void onMessage(AVIMTypedMessage message,AVIMConversation conversation,AVIMClient client){
+
+            org.kymjs.chat.bean.Message message1;
+            // 请按自己需求改写
+            switch(AVIMReservedMessageType.getAVIMReservedMessageType(message.getMessageType())) {
+                case TextMessageType:
+                    AVIMTextMessage textMsg = (AVIMTextMessage)message;
+                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, "Jerry", avatarTo, textMsg.getText(), false, true, new Date());
+                    break;
+                case ImageMessageType:
+                    AVIMImageMessage imageMsg = (AVIMImageMessage)message;
+                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, "Jerry", avatarTo, imageMsg.getFileUrl(), false, true, new Date());
+                    break;
+                default:
+                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, "Jerry", avatarTo, "数据类型错误", false, true, new Date());
+                    break;
+            }
+
+            datas.add(message1);
+            adapter.refresh(datas);
+        }
+        public void onMessageReceipt(AVIMTypedMessage message,AVIMConversation conversation,AVIMClient client){
+
+        }
+    }
+
 
 }

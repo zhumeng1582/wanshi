@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.wanshi.app.config.Contants;
+import com.avos.avoscloud.feedback.FeedbackAgent;
 import com.wanshi.app.R;
+import com.wanshi.app.config.Contants;
 import com.wanshi.app.page.base.BaseFragment;
 import com.wanshi.app.page.me.QQLoginActivity;
 
@@ -38,6 +39,9 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         if(v.getId() == R.id.llIndividualAccount){
            Intent intent = new Intent(mContext, QQLoginActivity.class);
             startActivityForResult(intent, Contants.requestDefault);
+        }else if(v.getId() == R.id.llFeedback){
+            FeedbackAgent agent = new FeedbackAgent(mContext);
+            agent.startDefaultThreadActivity();
         }
     }
 
