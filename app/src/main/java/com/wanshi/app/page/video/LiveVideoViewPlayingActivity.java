@@ -112,7 +112,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     private static final String POWER_LOCK = "LiveVideoViewPlayingActivity";
 
     private boolean mIsHwDecode = false;
-    private String conversationId = null;
+    private String conversationId;
 
     private final int EVENT_PLAY = 0;
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
@@ -201,6 +201,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             joinConversation();
         }else{
             findViewById(R.id.llConversation).setVisibility(View.GONE);
+            findViewById(R.id.btnFullScreen).setEnabled(false);
         }
 
         initUI();
@@ -271,7 +272,6 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         mController = (LinearLayout) findViewById(R.id.controlbar);
         llConversation = (LinearLayout) findViewById(R.id.llConversation);
         mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
-        llConversation.setVisibility(View.GONE);
         registerCallbackForControl();
 
         /**
