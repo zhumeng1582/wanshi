@@ -3,5 +3,5 @@
     <item android:drawable="@mipmap/icon_live_pressed" android:state_selected="true" />
     <item android:drawable="@mipmap/icon_live_pressed" android:state_pressed="true" />
     <item android:drawable="@mipmap/icon_live_pressed" android:state_checked="true" />
-    <item android:drawable="@mipmap/icon_live_pressed" />
+    <item android:drawable="@mipmap/icon_live__normal" />
 </selector>

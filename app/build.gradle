@@ -13,8 +13,8 @@ android {
 
     defaultConfig {
         applicationId "com.wanshi.app"
-        minSdkVersion 19
-        targetSdkVersion 23
+        minSdkVersion 17
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }

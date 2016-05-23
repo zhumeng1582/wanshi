@@ -65,11 +65,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     private String AK = "381715e304f04aceb2d7eb274cad3e27";   //请录入您的AK !!!
 
     private String mVideoSource = null;
-
     private ImageButton mPlaybtn = null;
-
     private LinearLayout mController = null;
-
     private TextView mCurrPostion = null;
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD = 0x1;
 
@@ -189,7 +186,6 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                 mVideoSource = uriPath.getPath();
             }
         }
-
         conversationId = getIntent().getStringExtra("conversationId");
         if (!TextUtils.isEmpty(conversationId)) {
             joinConversation();
@@ -202,8 +198,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         /**
          * 开启后台事件处理线程
          */
-        mHandlerThread = new HandlerThread("event handler thread",
-                Process.THREAD_PRIORITY_BACKGROUND);
+        mHandlerThread = new HandlerThread("event handler thread", Process.THREAD_PRIORITY_BACKGROUND);
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
 
