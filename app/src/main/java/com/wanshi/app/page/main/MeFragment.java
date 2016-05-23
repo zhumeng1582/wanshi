@@ -37,7 +37,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.llIndividualAccount){
-           Intent intent = new Intent(mContext, QQLoginActivity.class);
+            Intent intent = new Intent(mContext, QQLoginActivity.class);
             startActivityForResult(intent, Contants.requestDefault);
         }else if(v.getId() == R.id.llFeedback){
             FeedbackAgent agent = new FeedbackAgent(mContext);

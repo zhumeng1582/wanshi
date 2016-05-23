@@ -52,7 +52,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         recyclerView.addItemDecoration(new DividerGridItemDecoration(mContext));
 
         adapter = new ListLiveAdapter(mContext);
-        empty.showLoading();
+
         recyclerView.setEmptyView(mSwipeRefreshWidget,empty);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new ListLiveAdapter.OnRecyclerViewItemClickListener() {
@@ -83,7 +83,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGAMoocStyleRefreshViewHolder refreshViewHolder = new BGAMoocStyleRefreshViewHolder(mContext, true);
         refreshViewHolder.setOriginalImage(R.mipmap.ic_launcher);
-        refreshViewHolder.setUltimateColor(R.color.colorPrimary);
+        refreshViewHolder.setUltimateColor(R.color.colorAccent);
         // 设置下拉刷新和上拉加载更多的风格
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
     }
@@ -96,12 +96,16 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         AVQuery<AVObject> query = new AVQuery<>("Room");
         query.setLimit(10); // 限制最多10个结果
         query.orderByDescending("createdAt");
+        empty.showLoading();
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 adapter.clear();
+                if(e !=null){
+                    mSwipeRefreshWidget.endRefreshing();
+                    empty.showEmpty();
+                }
                 for (AVObject item : list) {
-                    Log.d(TAG, "Room:" + item.toJSONObject().toString());
                     final Room room = new Room();
                     room.setId(item.getObjectId());
                     room.setUrlStreamAddr(item.getString("stream_addr"));
@@ -116,18 +120,19 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                     query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
-                           logd("User:" + avUser.toString());
-                           logd("portrait:" + avUser.getString("portrait"));
-                           logd("nick:" + avUser.getString("nick"));
+                            if(e != null){
+                                mSwipeRefreshWidget.endRefreshing();
+                                empty.showEmpty();
+                            }
                             room.setUrlRoomIcon(avUser.getString("portrait"));
                             room.setRoomName(avUser.getString("nick"));
                             adapter.add(room);
-
+                            mSwipeRefreshWidget.endRefreshing();
+                            empty.showEmpty();
                         }
                     });
                 }
-                mSwipeRefreshWidget.endRefreshing();
-                empty.showEmpty();
+
             }
         });
 
@@ -152,9 +157,6 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                     query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
-                           logd("User:" + avUser.toString());
-                           logd("portrait:" + avUser.getString("portrait"));
-                           logd("nick:" + avUser.getString("nick"));
                             room.setUrlRoomIcon(avUser.getString("portrait"));
                             room.setRoomName(avUser.getString("nick"));
                             adapter.add(room);

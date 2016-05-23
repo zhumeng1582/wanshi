@@ -114,12 +114,16 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
         AVQuery<AVObject> query = new AVQuery<>("Room");
         query.setLimit(10); // 限制最多10个结果
         query.orderByDescending("createdAt");
+        empty.showLoading();
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 adapter.clear();
+                if(e != null){
+                    mSwipeRefreshWidget.endRefreshing();
+                    empty.showEmpty();
+                }
                 for (AVObject item : list) {
-                    logd("Room:" + item.toJSONObject().toString());
                     final Room room = new Room();
                     room.setId(item.getObjectId());
                     room.setUrlStreamAddr(item.getString("stream_addr"));
@@ -134,17 +138,19 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
                     query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
-                            logd("User:" + avUser.toString());
-                            logd("portrait:" + avUser.getString("portrait"));
-                            logd("nick:" + avUser.getString("nick"));
+                            if(e != null){
+                                mSwipeRefreshWidget.endRefreshing();
+                                empty.showEmpty();
+                            }
                             room.setUrlRoomIcon(avUser.getString("portrait"));
                             room.setRoomName(avUser.getString("nick"));
                             adapter.add(room);
+                            mSwipeRefreshWidget.endRefreshing();
+                            empty.showEmpty();
                         }
                     });
                 }
-                mSwipeRefreshWidget.endRefreshing();
-                empty.showEmpty();
+
             }
         });
 

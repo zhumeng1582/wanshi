@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -174,6 +175,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     @Override
     public void setRootView() {
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_playing_live);
     }
 
@@ -269,7 +271,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         mController = (LinearLayout) findViewById(R.id.controlbar);
         llConversation = (LinearLayout) findViewById(R.id.llConversation);
         mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
-
+        llConversation.setVisibility(View.GONE);
         registerCallbackForControl();
 
         /**
