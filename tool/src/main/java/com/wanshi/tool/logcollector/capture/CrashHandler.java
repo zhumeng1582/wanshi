@@ -1,12 +1,13 @@
-package com.wanshi.tool.logcollector;
+package com.wanshi.tool.logcollector.capture;
 
 import android.content.Context;
 import android.os.Build;
 import android.os.Process;
 import android.util.Base64;
 
-import com.wanshi.tool.utils.AppUtil;
-import com.wanshi.tool.utils.LogUtil;
+import com.wanshi.tool.logcollector.utils.Constants;
+import com.wanshi.tool.logcollector.utils.LogCollectorUtility;
+import com.wanshi.tool.logcollector.utils.LogHelper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -49,17 +50,17 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		mContext = c.getApplicationContext();
 		this.path = path;
 		// mContext = c;
-		appVerName = "appVerName:" + AppUtil.getVerName(mContext);
-		appVerCode = "appVerCode:" + AppUtil.getVersion(mContext);
+		appVerName = "appVerName:" + LogCollectorUtility.getVerName(mContext);
+		appVerCode = "appVerCode:" + LogCollectorUtility.getVerCode(mContext);
 		OsVer = "OsVer:" + Build.VERSION.RELEASE;
 		vendor = "vendor:" + Build.MANUFACTURER;
 		model = "model:" + Build.MODEL;
-		mid = "mid:" + AppUtil.getMid(mContext);
+		mid = "mid:" + LogCollectorUtility.getMid(mContext);
 	}
 
 	public static CrashHandler getInstance(Context c,String path) {
 		if (c == null) {
-			LogUtil.e(TAG, "Context is null");
+			LogHelper.e(TAG, "Context is null");
 			return null;
 		}
 		if (sInstance == null) {
@@ -74,7 +75,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			return;
 		}
 
-		boolean b = AppUtil.hasPermission(mContext);
+		boolean b = LogCollectorUtility.hasPermission(mContext);
 		if (!b) {
 			return;
 		}
@@ -100,38 +101,42 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	private void handleException(Throwable ex) {
 		String s = fomatCrashInfo(ex);
 		// String bes = fomatCrashInfoEncode(ex);
-		LogUtil.d(TAG, s);
+		LogHelper.d(TAG, s);
 		// LogHelper.d(TAG, bes);
 		//LogFileStorage.getInstance(mContext).saveLogFile2Internal(bes);
-//		LogFileStorage.getInstance(mContext, path).saveLogFile2Internal(s);
-		if(LogCollector.DEBUG){
+		LogFileStorage.getInstance(mContext,path).saveLogFile2Internal(s);
+		if(Constants.DEBUG){
 			LogFileStorage.getInstance(mContext,path).saveLogFile2SDcard(s, true);
 		}
 	}
 
 	private String fomatCrashInfo(Throwable ex) {
 
+		/*
+		 * String lineSeparator = System.getProperty("line.separator");
+		 * if(TextUtils.isEmpty(lineSeparator)){ lineSeparator = "\n"; }
+		 */
+
 		String lineSeparator = "\r\n";
+
+		StringBuilder sb = new StringBuilder();
+		String logTime = "logTime:" + LogCollectorUtility.getCurrentTime();
+
 		String exception = "exception:" + ex.toString();
+
 		Writer info = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(info);
 		ex.printStackTrace(printWriter);
 		
 		String dump = info.toString();
-		String crashMD5 = "crashMD5:"+ AppUtil.getMD5Str(dump);
+		String crashMD5 = "crashMD5:"
+				+ LogCollectorUtility.getMD5Str(dump);
 		
 		String crashDump = "crashDump:" + "{" + dump + "}";
 		printWriter.close();
+		
 
-		String logTime = "time:" + AppUtil.getCurrentTime();
-		String appVerName = "appVerName:" + AppUtil.getVerName(mContext);
-		String appVerCode = "appVerCode:" + AppUtil.getVersion(mContext);
-		String OsVer = "OsVer:" + Build.VERSION.RELEASE;
-		String vendor = "vendor:" + Build.MANUFACTURER;
-		String model = "model:" + Build.MODEL;
-		String mid = "mid:" + AppUtil.getMid(mContext);
-		StringBuilder sb = new StringBuilder();
-		sb.append("&gotoMarket---").append(lineSeparator);
+		sb.append("&start---").append(lineSeparator);
 		sb.append(logTime).append(lineSeparator);
 		sb.append(appVerName).append(lineSeparator);
 		sb.append(appVerCode).append(lineSeparator);
@@ -142,7 +147,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		sb.append(exception).append(lineSeparator);
 		sb.append(crashMD5).append(lineSeparator);
 		sb.append(crashDump).append(lineSeparator);
-		sb.append("&end---").append(lineSeparator).append(lineSeparator);
+		sb.append("&end---").append(lineSeparator).append(lineSeparator)
+				.append(lineSeparator);
 
 		return sb.toString();
 
@@ -150,10 +156,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 	private String fomatCrashInfoEncode(Throwable ex) {
 
+		/*
+		 * String lineSeparator = System.getProperty("line.separator");
+		 * if(TextUtils.isEmpty(lineSeparator)){ lineSeparator = "\n"; }
+		 */
+
 		String lineSeparator = "\r\n";
 
 		StringBuilder sb = new StringBuilder();
-		String logTime = "logTime:" + AppUtil.getCurrentTime();
+		String logTime = "logTime:" + LogCollectorUtility.getCurrentTime();
 
 		String exception = "exception:" + ex.toString();
 
@@ -164,7 +175,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		String dump = info.toString();
 		
 		String crashMD5 = "crashMD5:"
-				+ AppUtil.getMD5Str(dump);
+				+ LogCollectorUtility.getMD5Str(dump);
 		
 		try {
 			dump = URLEncoder.encode(dump, CHARSET);
@@ -176,7 +187,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		printWriter.close();
 		
 
-		sb.append("&gotoMarket---").append(lineSeparator);
+		sb.append("&start---").append(lineSeparator);
 		sb.append(logTime).append(lineSeparator);
 		sb.append(appVerName).append(lineSeparator);
 		sb.append(appVerCode).append(lineSeparator);

@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ import com.wanshi.app.widget.emptyview.EmptyRecyclerView;
 import com.wanshi.app.widget.emptyview.EmptyView;
 import com.wanshi.app.widget.refresh.BGAMoocStyleRefreshViewHolder;
 import com.wanshi.app.widget.refresh.DividerGridItemDecoration;
+import com.wanshi.tool.utils.logger.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -101,9 +101,10 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
             @Override
             public void done(List<AVObject> list, AVException e) {
                 adapter.clear();
-                if(e !=null){
+                if((e != null)||(list==null)||(list.isEmpty())){
                     mSwipeRefreshWidget.endRefreshing();
                     empty.showEmpty();
+                    return;
                 }
                 for (AVObject item : list) {
                     final Room room = new Room();
@@ -111,18 +112,19 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                     room.setUrlStreamAddr(item.getString("stream_addr"));
                     AVObject avObject = item.getAVObject("conversation");
                     if (avObject == null) {
-                        logd("此房间没有聊天室");
+                        Logger.d("此房间没有聊天室");
                     } else {
                         room.setConversationId(item.getAVObject("conversation").getObjectId());
-                        logd("此房间有聊天室,id:" + item.getAVObject("conversation").getObjectId());
+                        Logger.d("此房间有聊天室,id:" + item.getAVObject("conversation").getObjectId());
                     }
                     AVQuery<AVUser> query = AVUser.getQuery();
                     query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
-                            if(e != null){
+                            if((e != null)||(avUser==null)){
                                 mSwipeRefreshWidget.endRefreshing();
                                 empty.showEmpty();
+                                return;
                             }
                             room.setUrlRoomIcon(avUser.getString("portrait"));
                             room.setRoomName(avUser.getString("nick"));
@@ -148,8 +150,13 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
+                if((e != null)||(list==null)||(list.isEmpty())){
+                    mSwipeRefreshWidget.endRefreshing();
+                    empty.showEmpty();
+                    return;
+                }
                 for (AVObject item : list) {
-                    Log.d(TAG, "Room:" + item.toJSONObject().toString());
+                    Logger.d("Room:" + item.toJSONObject().toString());
                     final Room room = new Room();
                     room.setId(item.getObjectId());
                     room.setUrlStreamAddr(item.getString("stream_addr"));
@@ -157,6 +164,11 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                     query.getInBackground(item.getAVObject("anchor").getObjectId(), new GetCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
+                            if((e != null)||(avUser==null)){
+                                mSwipeRefreshWidget.endRefreshing();
+                                empty.showEmpty();
+                                return;
+                            }
                             room.setUrlRoomIcon(avUser.getString("portrait"));
                             room.setRoomName(avUser.getString("nick"));
                             adapter.add(room);

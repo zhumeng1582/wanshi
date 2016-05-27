@@ -43,6 +43,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
 import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
+import com.umeng.analytics.MobclickAgent;
 import com.wanshi.app.R;
 
 import org.kymjs.chat.ChatActivity;
@@ -344,6 +345,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
         //在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
             mLastPos = mVV.getCurrentPosition();
@@ -354,7 +356,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     @Override
     protected void onResume() {
         super.onResume();
-        KJLoger.debug(TAG, "onResume");
+        MobclickAgent.onResume(this);
         if (null != mWakeLock && (!mWakeLock.isHeld())) {
             mWakeLock.acquire();
         }

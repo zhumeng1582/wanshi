@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
-    <com.githang.viewpagerindicator.IconTabPageIndicator
+    <com.wanshi.app.widget.viewpagerindicator.IconTabPageIndicator
         android:id="@+id/indicator"
         android:layout_alignParentBottom="true"
         android:background="@color/white"

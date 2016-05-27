@@ -7,10 +7,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.githang.viewpagerindicator.IconPagerAdapter;
-import com.githang.viewpagerindicator.IconTabPageIndicator;
+import com.umeng.analytics.MobclickAgent;
 import com.wanshi.app.R;
 import com.wanshi.app.page.base.BaseFragment;
+import com.wanshi.app.widget.viewpagerindicator.IconPagerAdapter;
+import com.wanshi.app.widget.viewpagerindicator.IconTabPageIndicator;
 import com.wanshi.tool.utils.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -58,6 +59,16 @@ public class MainActivity extends FragmentActivity {
 
         return fragments;
     }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 
     class FragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
         private List<BaseFragment> mFragments;

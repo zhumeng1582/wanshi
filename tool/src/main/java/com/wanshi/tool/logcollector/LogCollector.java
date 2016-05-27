@@ -2,6 +2,10 @@ package com.wanshi.tool.logcollector;
 
 import android.content.Context;
 
+import com.wanshi.tool.logcollector.capture.CrashHandler;
+import com.wanshi.tool.logcollector.utils.Constants;
+import com.wanshi.tool.logcollector.utils.LogHelper;
+
 
 /**
  * 
@@ -12,15 +16,12 @@ public class LogCollector {
 
 private static final String TAG = LogCollector.class.getName();
 
-	public static boolean DEBUG = false;
-	private static String Upload_Url;
 	
 	private static Context mContext;
 	
 	private static String mPath;
 	
 	private static boolean isInit = false;
-	
 
 
 	public static void init(Context c ,String path){
@@ -32,11 +33,18 @@ private static final String TAG = LogCollector.class.getName();
 		}
 		mContext = c;
 		mPath = path;
-		CrashHandler crashHandler = CrashHandler.getInstance(mContext, mPath);
+		
+		CrashHandler crashHandler = CrashHandler.getInstance(c,path);
 		crashHandler.init();
+		
 		isInit = true;
+		
 	}
+	
+
+	
 	public static void setDebugMode(boolean isDebug){
-		DEBUG = isDebug;
+		Constants.DEBUG = isDebug;
+		LogHelper.enableDefaultLog = isDebug;
 	}
 }

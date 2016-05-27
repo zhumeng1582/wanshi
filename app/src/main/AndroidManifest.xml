@@ -65,6 +65,9 @@
                 <data android:scheme="tencent1105334255" />
             </intent-filter>
         </activity>
+
+        <meta-data android:value="5744f73167e58e48140000b9" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="Wandoujia" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>
