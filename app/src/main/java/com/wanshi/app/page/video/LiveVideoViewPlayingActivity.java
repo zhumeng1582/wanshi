@@ -401,12 +401,14 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         super.onDestroy();
         //退出后台事件处理线程
         mHandlerThread.quit();
-        conversation.quit(new AVIMConversationCallback() {
-            @Override
-            public void done(AVIMException e) {
-                KJLoger.debug(TAG, "退出聊天室");
-            }
-        });
+        if(conversation!= null){
+            conversation.quit(new AVIMConversationCallback() {
+                @Override
+                public void done(AVIMException e) {
+                    KJLoger.debug(TAG, "退出聊天室");
+                }
+            });
+        }
     }
 
     @Override
