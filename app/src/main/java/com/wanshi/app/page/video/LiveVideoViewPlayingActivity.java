@@ -19,7 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,8 +72,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     private String AK = "381715e304f04aceb2d7eb274cad3e27";   //请录入您的AK !!!
 
     private String mVideoSource = null;
-    private ImageButton mPlaybtn = null;
-    private ImageButton btnFullScreen = null;
+    private ImageView mPlaybtn = null;
+    private ImageView btnFullScreen = null;
     private LinearLayout mController = null;
     private LinearLayout llConversation = null;
     private TextView mCurrPostion = null;
@@ -268,8 +268,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
      * 初始化界面
      */
     private void initUI() {
-        mPlaybtn = (ImageButton) findViewById(R.id.btnPlay);
-        btnFullScreen = (ImageButton) findViewById(R.id.btnFullScreen);
+        mPlaybtn = (ImageView) findViewById(R.id.btnPlay);
+        btnFullScreen = (ImageView) findViewById(R.id.btnFullScreen);
         mController = (LinearLayout) findViewById(R.id.controlbar);
         llConversation = (LinearLayout) findViewById(R.id.llConversation);
         mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);

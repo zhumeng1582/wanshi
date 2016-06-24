@@ -78,7 +78,7 @@ public class ListLiveAdapter extends RecyclerView.Adapter<ListLiveAdapter.Holder
     }
 
     //define interface
-    public static interface OnRecyclerViewItemClickListener {
+    public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view , Room data);
     }
 

@@ -30,10 +30,10 @@
             android:background="#44666666"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/btn_style_pause"/>
 
@@ -76,10 +76,10 @@
                     android:textStyle="bold"/>
             </LinearLayout>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnFullScreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/btn_style_zoom_in"/>
         </LinearLayout>

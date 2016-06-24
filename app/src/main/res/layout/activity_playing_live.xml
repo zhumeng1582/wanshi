@@ -27,13 +27,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="#44666666"
+            android:background="#00000000"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/btn_style_pause"/>
 
             <TextView
@@ -51,10 +51,10 @@
                 android:textSize="14sp"
                 android:textStyle="bold"/>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnFullScreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/btn_style_zoom_in"/>
         </LinearLayout>
     </RelativeLayout>

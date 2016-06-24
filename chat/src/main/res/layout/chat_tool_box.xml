@@ -21,6 +21,7 @@
             android:layout_gravity="bottom"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
+            android:background="#FFBF00"
             android:text="发送"
             android:textColor="#ffffffff"
             android:textSize="15sp"/>

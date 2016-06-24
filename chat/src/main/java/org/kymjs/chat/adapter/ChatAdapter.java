@@ -30,15 +30,12 @@ import org.kymjs.chat.UrlUtils;
 import org.kymjs.chat.bean.Message;
 import org.kymjs.kjframe.KJBitmap;
 import org.kymjs.kjframe.utils.KJLoger;
-import org.kymjs.kjframe.utils.StringUtils;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author kymjs (http://www.kymjs.com/) on 6/8/15.
@@ -111,12 +108,14 @@ public class ChatAdapter extends BaseAdapter {
             holder.progress = (ProgressBar) v.findViewById(R.id.chat_item_progress);
             holder.tv_chatcontent = (TextView) v.findViewById(R.id.chat_item_content_text);
             holder.tv_date = (TextView) v.findViewById(R.id.chat_item_date);
+            holder.tv_userName = (TextView) v.findViewById(R.id.chat_item_name);
             v.setTag(holder);
         } else {
             holder = (ViewHolder) v.getTag();
         }
         KJLoger.log("TAG","聊天时间：time:" + stringToDate(data.getTime()));
-        holder.tv_date.setText(StringUtils.friendlyTime(stringToDate(data.getTime())));
+
+        holder.tv_date.setText( stringToDate(data.getTime()));
         holder.tv_date.setVisibility(View.VISIBLE);
 
         //如果是文本类型，则隐藏图片，如果是图片则隐藏文本
@@ -157,8 +156,10 @@ public class ChatAdapter extends BaseAdapter {
         //显示头像
         if (data.getIsSend()) {
             kjb.display(holder.img_avatar, data.getFromUserAvatar());
+            holder.tv_userName.setText(data.getFromUserName());
         } else {
             kjb.display(holder.img_avatar, data.getToUserAvatar());
+            holder.tv_userName.setText(data.getToUserName());
         }
 
         if (listener != null) {
@@ -207,7 +208,9 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+
         TextView tv_date;
+        TextView tv_userName;
         ImageView img_avatar;
         TextView tv_chatcontent;
         ImageView img_chatimage;

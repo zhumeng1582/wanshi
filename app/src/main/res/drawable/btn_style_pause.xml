@@ -2,8 +2,8 @@
 <selector
   	xmlns:android="http://schemas.android.com/apk/res/android">
   	<item android:state_pressed="true"
-          android:drawable="@drawable/ic_stop_media_pressed" />
+          android:drawable="@mipmap/ic_stop_media" />
   	<item android:state_enabled="false"
-          android:drawable="@drawable/ic_stop_media_disable" />
-    <item android:drawable="@drawable/ic_stop_media" />
+          android:drawable="@mipmap/ic_stop_media" />
+    <item android:drawable="@mipmap/ic_stop_media" />
 </selector>

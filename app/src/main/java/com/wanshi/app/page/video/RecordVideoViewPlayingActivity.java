@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -45,8 +46,8 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     private String mVideoSource;
 
-    private ImageButton mPlaybtn;
-    private ImageButton btnFullScreen;
+    private ImageView mPlaybtn;
+    private ImageView btnFullScreen;
     private LinearLayout mController;
     private LinearLayout llConversation;
 
@@ -185,8 +186,8 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     //初始化界面
     private void initUI() {
-        mPlaybtn = (ImageButton) findViewById(R.id.btnPlay);
-        btnFullScreen = (ImageButton) findViewById(R.id.btnFullScreen);
+        mPlaybtn = (ImageView) findViewById(R.id.btnPlay);
+        btnFullScreen = (ImageView) findViewById(R.id.btnFullScreen);
         mController = (LinearLayout) findViewById(R.id.controlbar);
         llConversation = (LinearLayout) findViewById(R.id.llConversation);
         mProgress = (SeekBar) findViewById(R.id.media_progress);
