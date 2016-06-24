@@ -4,8 +4,10 @@ import android.app.Application;
 import android.os.Environment;
 
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVUser;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.umeng.analytics.MobclickAgent;
+import com.wanshi.app.cache.SharePreferenceUtil;
 import com.wanshi.tool.logcollector.LogCollector;
 import com.wanshi.tool.utils.logger.LogLevel;
 import com.wanshi.tool.utils.logger.Logger;
@@ -29,5 +31,16 @@ public class WanShiApplication  extends Application {
         Logger.init("WanShi") .methodCount(3).logLevel(LogLevel.FULL);
         LogCollector.setDebugMode(true);
 		LogCollector.init(getApplicationContext(), crashLogFilePath);// params
+
+
+        AVUser currentUser = AVUser.getCurrentUser();
+        if (currentUser != null) {
+            // 跳转到首页
+
+            SharePreferenceUtil.setUserName(this,AVUser.getCurrentUser().getString("nick"));
+        } else {
+            //缓存用户对象为空时，可打开用户注册界面…
+            SharePreferenceUtil.setUserName(this,"");
+        }
     }
 }

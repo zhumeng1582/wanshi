@@ -2,6 +2,7 @@ package com.wanshi.app.page.me;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
@@ -12,8 +13,8 @@ import com.avos.sns.SNSBase;
 import com.avos.sns.SNSCallback;
 import com.avos.sns.SNSException;
 import com.avos.sns.SNSType;
+import com.wanshi.app.cache.SharePreferenceUtil;
 import com.wanshi.app.page.base.BaseActivity;
-import com.wanshi.tool.utils.logger.Logger;
 
 /**
  * 项目名称：蜂鸟金融
@@ -37,18 +38,21 @@ public class QQLoginActivity extends BaseActivity {
             @Override
             public void done(SNSBase object, SNSException e) {
                 if (e == null) {
-                    Logger.d(TAG,"登录成功");
+                    Log.d(TAG,"登录成功");
                     SNS.loginWithAuthData(object.userInfo(), new LogInCallback<AVUser>() {
                         @Override
                         public void done(AVUser avUser, AVException e) {
-                            Logger.d(TAG,"注册用户名: "+avUser.getUsername());
+                            Log.d(TAG,"注册用户名: "+avUser.getUsername());
+                            AVUser.getCurrentUser().put("nick", "用户");
+                            AVUser.getCurrentUser().saveInBackground();
+                            SharePreferenceUtil.setUserName(mContext,"用户");
                             finish();
                         }
                     });
 
                 }else{
                     e.printStackTrace();
-                    Logger.d(TAG,"登录失败");
+                    Log.d(TAG,"登录失败");
                 }
             }
         };

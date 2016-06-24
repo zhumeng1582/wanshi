@@ -22,10 +22,10 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.kymjs.chat.OnOperationListener;
 import org.kymjs.chat.R;
@@ -56,7 +56,7 @@ public class KJChatKeyboard extends RelativeLayout implements
     private EditText mEtMsg;
     private CheckBox mBtnFace;
     private CheckBox mBtnMore;
-    private Button mBtnSend;
+    private TextView mBtnSend;
 
     /**
      * 表情
@@ -111,7 +111,7 @@ public class KJChatKeyboard extends RelativeLayout implements
 
     private void initWidget() {
         mEtMsg = (EditText) findViewById(R.id.toolbox_et_message);
-        mBtnSend = (Button) findViewById(R.id.toolbox_btn_send);
+        mBtnSend = (TextView) findViewById(R.id.toolbox_btn_send);
         mBtnFace = (CheckBox) findViewById(R.id.toolbox_btn_face);
         mBtnMore = (CheckBox) findViewById(R.id.toolbox_btn_more);
         mRlFace = (RelativeLayout) findViewById(R.id.toolbox_layout_face);

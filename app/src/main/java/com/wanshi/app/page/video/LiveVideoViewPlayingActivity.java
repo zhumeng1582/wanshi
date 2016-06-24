@@ -45,6 +45,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.umeng.analytics.MobclickAgent;
 import com.wanshi.app.R;
+import com.wanshi.app.cache.SharePreferenceUtil;
 
 import org.kymjs.chat.ChatActivity;
 import org.kymjs.chat.OnOperationListener;
@@ -82,7 +83,6 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     private KJChatKeyboard box;
     private ListView mRealListView;
 
-    List<org.kymjs.chat.bean.Message> datas = new ArrayList<>();
     private ChatAdapter adapter;
 
     private String avatarFrom = "http://www.iconpng.com/png/possible_android_4.5/chrome.png";
@@ -118,7 +118,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     private final int EVENT_PLAY = 0;
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
     private AVIMConversation conversation;
-    private AVIMClient tom;
+    private AVIMClient me;
     private String name ="游客";
 
     class EventHandler extends Handler {
@@ -184,6 +184,11 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     public void initWidget() {
         super.initWidget();
 
+        name = SharePreferenceUtil.getUserName(this);
+        if(TextUtils.isEmpty(name)){
+            name = "游客";
+        }
+
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
 
@@ -223,8 +228,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     }
 
     private void joinConversation() {
-        tom = AVIMClient.getInstance(name);
-        tom.open(new AVIMClientCallback() {
+        me = AVIMClient.getInstance(name);
+        me.open(new AVIMClientCallback() {
 
             @Override
             public void done(AVIMClient client, AVIMException e) {
@@ -243,10 +248,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                                         if (e == null) {
                                             for (AVIMMessage item : messages) {
                                                 org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,
-                                                        org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, item.getFrom(), avatarFrom, "Jerry", avatarTo,
+                                                        org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, item.getFrom(), avatarFrom, item.getFrom(), avatarTo,
                                                         ((AVIMTextMessage) item).getText(), name.equals(item.getFrom()), true, new Date(item.getTimestamp()));
-                                                datas.add(message);
-                                                adapter.refresh(datas);
+                                                adapter.add(message);
                                             }
                                         }
                                     }
@@ -481,16 +485,15 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
                             message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,
                                     org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                                    name, avatarFrom, "Jerry", avatarTo, content, true, true, new Date());
+                                    name, avatarFrom, msg.getFrom(), avatarTo, content, true, true, new Date());
 
 
                         } else {
                             message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,
                                     org.kymjs.chat.bean.Message.MSG_STATE_FAIL,
-                                    name, avatarFrom, "Jerry", avatarTo, content, true, true, new Date());
+                                    name, avatarFrom, msg.getFrom(), avatarTo, content, true, true, new Date());
                         }
-                        datas.add(message);
-                        adapter.refresh(datas);
+                        adapter.add(message);
                     }
                 });
 
@@ -499,10 +502,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             @Override
             public void selectedFace(Faceicon content) {
                 org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_FACE, org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                        "Tom", "avatar", "Jerry", "avatar", content.getPath(), true, true, new
+                        name, "avatar", "Jerry", "avatar", content.getPath(), true, true, new
                         Date());
-                datas.add(message);
-                adapter.refresh(datas);
+                adapter.add(message);
                 createReplayMsg(message);
             }
 
@@ -547,12 +549,12 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     private void initListView() {
 
-        adapter = new ChatAdapter(this, datas, getOnChatItemClickListener());
+        adapter = new ChatAdapter(this, getOnChatItemClickListener());
         mRealListView.setAdapter(adapter);
     }
 
     private void createReplayMsg(org.kymjs.chat.bean.Message message) {
-        final org.kymjs.chat.bean.Message reMessage = new org.kymjs.chat.bean.Message(message.getType(), org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, "Tom",
+        final org.kymjs.chat.bean.Message reMessage = new org.kymjs.chat.bean.Message(message.getType(), org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name,
                 "avatar", "Jerry", "avatar", message.getType() == org.kymjs.chat.bean.Message.MSG_TYPE_TEXT ? "返回:"
                 + message.getContent() : message.getContent(), false,
                 true, new Date());
@@ -564,8 +566,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            datas.add(reMessage);
-                            adapter.refresh(datas);
+                            adapter.add(reMessage);
                         }
                     });
                 } catch (Exception e) {
@@ -617,10 +618,9 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             if (dataUri != null) {
                 File file = FileUtils.uri2File(aty, dataUri);
                 org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO, org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                        "Tom", "avatar", "Jerry",
+                        name, "avatar", "Jerry",
                         "avatar", file.getAbsolutePath(), true, true, new Date());
-                datas.add(message);
-                adapter.refresh(datas);
+                adapter.add(message);
             }
         }
     }
@@ -648,8 +648,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         return new ChatActivity.OnChatItemClickListener() {
             @Override
             public void onPhotoClick(int position) {
-                KJLoger.debug(datas.get(position).getContent() + "点击图片的");
-                ViewInject.toast(aty, datas.get(position).getContent() + "点击图片的");
+                KJLoger.debug(adapter.getDatas().get(position).getContent() + "点击图片的");
+                ViewInject.toast(aty, adapter.getDatas().get(position).getContent() + "点击图片的");
             }
 
             @Override
@@ -673,19 +673,18 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             switch(AVIMReservedMessageType.getAVIMReservedMessageType(message.getMessageType())) {
                 case TextMessageType:
                     AVIMTextMessage textMsg = (AVIMTextMessage)message;
-                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, "Jerry", avatarTo, textMsg.getText(), false, true, new Date());
+                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, message.getFrom(), avatarTo, textMsg.getText(), false, true, new Date());
                     break;
                 case ImageMessageType:
                     AVIMImageMessage imageMsg = (AVIMImageMessage)message;
-                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, "Jerry", avatarTo, imageMsg.getFileUrl(), false, true, new Date());
+                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, message.getFrom(), avatarTo, imageMsg.getFileUrl(), false, true, new Date());
                     break;
                 default:
-                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, "Jerry", avatarTo, "数据类型错误", false, true, new Date());
+                    message1 = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_TEXT,org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, avatarFrom, message.getFrom(), avatarTo, "数据类型错误", false, true, new Date());
                     break;
             }
 
-            datas.add(message1);
-            adapter.refresh(datas);
+            adapter.add(message1);
         }
         public void onMessageReceipt(AVIMTypedMessage message,AVIMConversation conversation,AVIMClient client){
 

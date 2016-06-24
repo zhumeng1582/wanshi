@@ -47,22 +47,26 @@ public class ChatAdapter extends BaseAdapter {
     private KJBitmap kjb;
     private OnChatItemClickListener listener;
 
-    public ChatAdapter(Context cxt, List<Message> datas, OnChatItemClickListener listener) {
+    public ChatAdapter(Context cxt, OnChatItemClickListener listener) {
         this.cxt = cxt;
-        if (datas == null) {
-            datas = new ArrayList<Message>(0);
-        }
-        this.datas = datas;
+
+        datas = new ArrayList<>(0);
         kjb = new KJBitmap();
         this.listener = listener;
     }
 
-    public void refresh(List<Message> datas) {
+    public void add(Message item) {
+        if (item == null) {
+            return;
+        }
         if (datas == null) {
             datas = new ArrayList<>(0);
         }
-        this.datas = datas;
+        this.datas.add(item);
         notifyDataSetChanged();
+    }
+    public List<Message> getDatas(){
+        return datas;
     }
 
     @Override

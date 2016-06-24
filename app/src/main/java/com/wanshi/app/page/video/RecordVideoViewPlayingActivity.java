@@ -13,14 +13,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
 import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
@@ -78,15 +76,11 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
     private final Object SYNC_Playing = new Object();
 
     private WakeLock mWakeLock;
-    private static final String POWER_LOCK = "LiveVideoViewPlayingActivity";
 
     private boolean mIsHwDecode = false;
-//    private String conversationId;
 
     private final int EVENT_PLAY = 0;
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
-    private AVIMConversation conv;
-    private String name ="游客";
 
     class EventHandler extends Handler {
         public EventHandler(Looper looper) {
@@ -160,7 +154,7 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
         super.initWidget();
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
+        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, TAG);
 
         mIsHwDecode = getIntent().getBooleanExtra("isHW", false);
         Uri uriPath = getIntent().getData();
