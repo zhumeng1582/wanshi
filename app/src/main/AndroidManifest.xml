@@ -27,7 +27,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".page.video.LiveVideoViewPlayingActivity" />
+        <activity android:name=".page.video.LiveVideoViewPlayingActivity"
+                  android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".page.video.RecordVideoViewPlayingActivity" />
 
         <activity android:name=".page.me.QQLoginActivity" >

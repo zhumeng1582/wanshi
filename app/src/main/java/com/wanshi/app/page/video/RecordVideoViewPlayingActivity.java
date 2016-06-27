@@ -244,8 +244,10 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
             public void onClick(View v) {
                 if(llConversation.getVisibility() == View.VISIBLE){
                     llConversation.setVisibility(View.GONE);
+                    btnFullScreen.setImageResource(R.drawable.btn_style_zoom_out);
                 }else{
                     llConversation.setVisibility(View.VISIBLE);
+                    btnFullScreen.setImageResource(R.drawable.btn_style_zoom_in);
                 }
             }
         });

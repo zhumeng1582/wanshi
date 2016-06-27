@@ -186,7 +186,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
         name = SharePreferenceUtil.getUserName(this);
         if(TextUtils.isEmpty(name)){
-            name = "游客";
+            name = "游客"+System.currentTimeMillis();
+            SharePreferenceUtil.setUserName(this,name);
         }
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -252,6 +253,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                                                         ((AVIMTextMessage) item).getText(), name.equals(item.getFrom()), true, new Date(item.getTimestamp()));
                                                 adapter.add(message);
                                             }
+                                            //滑动到底部
+                                            mRealListView.setSelection(adapter.getCount() - 1);
                                         }
                                     }
                                 });
@@ -326,8 +329,10 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             public void onClick(View v) {
                 if(llConversation.getVisibility() == View.VISIBLE){
                     llConversation.setVisibility(View.GONE);
+                    btnFullScreen.setImageResource(R.drawable.btn_style_zoom_out);
                 }else{
                     llConversation.setVisibility(View.VISIBLE);
+                    btnFullScreen.setImageResource(R.drawable.btn_style_zoom_in);
                 }
             }
         });
@@ -522,7 +527,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             public void selectedFunction(int index) {
                 switch (index) {
                     case 0:
-                        goToAlbum();
+//                        goToAlbum();
+                        ViewInject.toast("跳转相册");
                         break;
                     case 1:
                         ViewInject.toast("跳转相机");

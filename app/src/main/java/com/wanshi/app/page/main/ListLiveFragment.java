@@ -100,12 +100,19 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                adapter.clear();
-                if((e != null)||(list==null)||(list.isEmpty())){
-                    mSwipeRefreshWidget.endRefreshing();
+
+                mSwipeRefreshWidget.endRefreshing();
+                if(e !=null){
+                    empty.showError();
+                    return;
+                }else{
                     empty.showEmpty();
+                }
+                if((list==null)||(list.isEmpty())){
                     return;
                 }
+                adapter.clear();
+
                 for (AVObject item : list) {
                     final Room room = new Room();
                     room.setId(item.getObjectId());
@@ -122,15 +129,11 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                         @Override
                         public void done(AVUser avUser, AVException e) {
                             if((e != null)||(avUser==null)){
-                                mSwipeRefreshWidget.endRefreshing();
-                                empty.showEmpty();
                                 return;
                             }
                             room.setUrlRoomIcon(avUser.getString("portrait"));
                             room.setRoomName(avUser.getString("nick"));
                             adapter.add(room);
-                            mSwipeRefreshWidget.endRefreshing();
-                            empty.showEmpty();
                         }
                     });
                 }
@@ -150,9 +153,14 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                if((e != null)||(list==null)||(list.isEmpty())){
-                    mSwipeRefreshWidget.endRefreshing();
+                mSwipeRefreshWidget.endRefreshing();
+                if(e !=null){
+                    empty.showError();
+                    return;
+                }else{
                     empty.showEmpty();
+                }
+                if((list==null)||(list.isEmpty())){
                     return;
                 }
                 for (AVObject item : list) {
@@ -165,8 +173,6 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                         @Override
                         public void done(AVUser avUser, AVException e) {
                             if((e != null)||(avUser==null)){
-                                mSwipeRefreshWidget.endRefreshing();
-                                empty.showEmpty();
                                 return;
                             }
                             room.setUrlRoomIcon(avUser.getString("portrait"));
@@ -176,8 +182,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                         }
                     });
                 }
-                mSwipeRefreshWidget.endLoadingMore();
-                empty.showEmpty();
+
             }
         });
         return true;
