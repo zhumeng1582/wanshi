@@ -46,6 +46,8 @@ import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.umeng.analytics.MobclickAgent;
 import com.wanshi.app.R;
 import com.wanshi.app.cache.SharePreferenceUtil;
+import com.wanshi.app.config.Contants;
+import com.wanshi.tool.utils.logger.Logger;
 
 import org.kymjs.chat.ChatActivity;
 import org.kymjs.chat.OnOperationListener;
@@ -55,6 +57,7 @@ import org.kymjs.chat.bean.Faceicon;
 import org.kymjs.chat.emoji.DisplayRules;
 import org.kymjs.chat.widget.KJChatKeyboard;
 import org.kymjs.kjframe.KJActivity;
+import org.kymjs.kjframe.ui.BindView;
 import org.kymjs.kjframe.ui.ViewInject;
 import org.kymjs.kjframe.utils.FileUtils;
 import org.kymjs.kjframe.utils.KJLoger;
@@ -68,23 +71,26 @@ import java.util.Random;
 public class LiveVideoViewPlayingActivity extends KJActivity implements OnPreparedListener, OnCompletionListener,
         OnErrorListener, OnInfoListener, OnPlayingBufferCacheListener {
 
-    private final String TAG = "LiveVideoViewPlayingActivity";
-
-    private String AK = "381715e304f04aceb2d7eb274cad3e27";   //请录入您的AK !!!
+//    private final String TAG = "LiveVideoViewPlayingActivity";
 
     private String mVideoSource = null;
-    private ImageView mPlaybtn = null;
-    private ImageView btnFullScreen = null;
-    private LinearLayout mController = null;
-    private LinearLayout llConversation = null;
-    private TextView mCurrPostion = null;
     public static final int REQUEST_CODE_GETIMAGE_BYSDCARD = 0x1;
 
+    @BindView(id = R.id.btnPlay)
+    private ImageView mPlaybtn;
+    @BindView(id = R.id.btnFullScreen)
+    private ImageView btnFullScreen;
+    @BindView(id = R.id.controlbar)
+    private LinearLayout mController;
+    @BindView(id = R.id.llConversation)
+    private LinearLayout llConversation;
+    @BindView(id = R.id.textCurrentTime)
+    private TextView mCurrPostion;
+    @BindView(id = R.id.chat_msg_input_box)
     private KJChatKeyboard box;
+    @BindView(id = R.id.chat_listview)
     private ListView mRealListView;
-
     private ChatAdapter adapter;
-
     private String avatarFrom = "http://www.iconpng.com/png/possible_android_4.5/chrome.png";
     private String avatarTo = "http://www.iconpng.com/png/webdev-seo/chrome3.png";
 
@@ -102,19 +108,15 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
 
     private PLAYER_STATUS mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
 
-    private BVideoView mVV = null;
-
+    @BindView(id = R.id.video_view)
+    private BVideoView mVV;
     private EventHandler mEventHandler;
     private HandlerThread mHandlerThread;
-
     private final Object SYNC_Playing = new Object();
-
     private WakeLock mWakeLock = null;
     private static final String POWER_LOCK = "LiveVideoViewPlayingActivity";
-
     private boolean mIsHwDecode = false;
     private String conversationId;
-
     private final int EVENT_PLAY = 0;
     private final int UI_EVENT_UPDATE_CURRPOSITION = 1;
     private AVIMConversation conversation;
@@ -135,7 +137,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                         synchronized (SYNC_Playing) {
                             try {
                                 SYNC_Playing.wait();
-                                KJLoger.debug(TAG, "wait player status to idle");
+                                KJLoger.debug("wait player status to idle");
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -190,6 +192,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             SharePreferenceUtil.setUserName(this,name);
         }
 
+
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
 
@@ -207,8 +210,8 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         if (!TextUtils.isEmpty(conversationId)) {
             joinConversation();
         }else{
-            findViewById(R.id.llConversation).setVisibility(View.GONE);
-            findViewById(R.id.btnFullScreen).setEnabled(false);
+            llConversation.setVisibility(View.GONE);
+            btnFullScreen.setEnabled(false);
         }
 
         initUI();
@@ -219,9 +222,6 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
         mHandlerThread = new HandlerThread("event handler thread", Process.THREAD_PRIORITY_BACKGROUND);
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
-
-        box = (KJChatKeyboard) findViewById(R.id.chat_msg_input_box);
-        mRealListView = (ListView) findViewById(R.id.chat_listview);
 
         mRealListView.setSelector(android.R.color.transparent);
         initMessageInputToolBox();
@@ -242,7 +242,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
                         public void done(AVIMException e) {
                             if (e == null) {
                                 //加入成功
-                                KJLoger.log(TAG, "加入成功聊天室,id:" + conversationId);
+                                Logger.d("加入成功聊天室,id:" + conversationId);
                                 conversation.queryMessages(10, new AVIMMessagesQueryCallback() {
                                     @Override
                                     public void done(List<AVIMMessage> messages, AVIMException e) {
@@ -275,22 +275,13 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
      * 初始化界面
      */
     private void initUI() {
-        mPlaybtn = (ImageView) findViewById(R.id.btnPlay);
-        btnFullScreen = (ImageView) findViewById(R.id.btnFullScreen);
-        mController = (LinearLayout) findViewById(R.id.controlbar);
-        llConversation = (LinearLayout) findViewById(R.id.llConversation);
-        mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
+
         registerCallbackForControl();
 
         /**
          * 设置ak
          */
-        BVideoView.setAK(AK);
-
-        /**
-         *获取BVideoView对象
-         */
-        mVV = (BVideoView) findViewById(R.id.video_view);
+        BVideoView.setAK(Contants.AK);
 
         /**
          * 注册listener
@@ -414,7 +405,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
             conversation.quit(new AVIMConversationCallback() {
                 @Override
                 public void done(AVIMException e) {
-                    KJLoger.debug(TAG, "退出聊天室");
+                    Logger.d( "退出聊天室");
                 }
             });
         }
@@ -445,7 +436,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     //播放出错
     @Override
     public boolean onError(int what, int extra) {
-        KJLoger.debug(TAG, "onError");
+        Logger.d( "onError");
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
@@ -457,7 +448,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     //播放完成
     @Override
     public void onCompletion() {
-        KJLoger.debug(TAG, "onCompletion");
+        Logger.d( "onCompletion");
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
@@ -469,7 +460,7 @@ public class LiveVideoViewPlayingActivity extends KJActivity implements OnPrepar
     @Override
     public void onPrepared() {
         // TODO Auto-generated method stub
-        KJLoger.debug(TAG, "onPrepared");
+        Logger.d("onPrepared");
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
     }

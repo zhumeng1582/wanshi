@@ -80,12 +80,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
     private void initRefreshLayout(BGARefreshLayout refreshLayout) {
         // 为BGARefreshLayout设置代理
         refreshLayout.setDelegate(this);
-        // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
-        BGAMoocStyleRefreshViewHolder refreshViewHolder = new BGAMoocStyleRefreshViewHolder(mContext, true);
-        refreshViewHolder.setOriginalImage(R.mipmap.ic_launcher);
-        refreshViewHolder.setUltimateColor(R.color.colorAccent);
-        // 设置下拉刷新和上拉加载更多的风格
-        refreshLayout.setRefreshViewHolder(refreshViewHolder);
+        refreshLayout.setRefreshViewHolder(new BGAMoocStyleRefreshViewHolder(mContext, true));
     }
 
 

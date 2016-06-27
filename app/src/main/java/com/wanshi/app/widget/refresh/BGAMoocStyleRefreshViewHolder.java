@@ -23,6 +23,8 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
+import com.wanshi.app.R;
+
 import cn.bingoogolapple.refreshlayout.BGAMoocStyleRefreshView;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 
@@ -33,8 +35,8 @@ import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
  */
 public class BGAMoocStyleRefreshViewHolder extends BGARefreshViewHolder {
     private BGAMoocStyleRefreshView mMoocRefreshView;
-    private int mUltimateColorResId = -1;
-    private int mOriginalImageResId = -1;
+    private int mUltimateColorResId = R.color.colorAccent;
+    private int mOriginalImageResId = R.mipmap.ic_launcher;
 
     public BGAMoocStyleRefreshViewHolder(Context context, boolean isLoadingMoreEnabled) {
         super(context, isLoadingMoreEnabled);

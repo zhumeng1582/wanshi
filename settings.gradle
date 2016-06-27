@@ -1,1 +1,1 @@
-include ':app', ':chat', ':tool'
+include ':app', ':chat', ':tool', ':kjframe'

@@ -27,6 +27,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.umeng.analytics.MobclickAgent;
 import com.wanshi.app.R;
+import com.wanshi.app.config.Contants;
 
 import org.kymjs.kjframe.KJActivity;
 import org.kymjs.kjframe.utils.KJLoger;
@@ -36,11 +37,6 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     private final String TAG = "LiveVideoViewPlayingActivity";
 
-    /**
-     * 您的AK
-     * 请到http://console.bce.baidu.com/iam/#/iam/accesslist获取
-     */
-    private String AK = "381715e304f04aceb2d7eb274cad3e27";   //请录入您的AK !!!
 
     private String mVideoSource;
 
@@ -192,7 +188,7 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
         registerCallbackForControl();
 
         //设置ak
-        BVideoView.setAK(AK);
+        BVideoView.setAK(Contants.AK);
 
         mVV = (BVideoView) findViewById(R.id.video_view);
 

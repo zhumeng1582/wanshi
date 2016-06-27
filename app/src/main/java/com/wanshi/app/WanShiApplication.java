@@ -48,7 +48,7 @@ public class WanShiApplication  extends Application {
         AVUser currentUser = AVUser.getCurrentUser();
         if (currentUser != null) {
             SharePreferenceUtil.setUserName(this,AVUser.getCurrentUser().getString("nick"));
-        } else {
+        } else{
             SharePreferenceUtil.setUserName(this,"");
         }
     }
