@@ -3,7 +3,6 @@ package com.wanshi.app.page.main;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.wanshi.app.R;
 import com.wanshi.app.adapter.ListLiveAdapter;
 import com.wanshi.app.bean.Room;
 import com.wanshi.app.page.base.BaseFragment;
-import com.wanshi.app.page.video.LiveVideoViewPlayingActivity;
+import com.wanshi.app.page.videolive.LiveVideoActivity;
 import com.wanshi.app.widget.emptyview.EmptyRecyclerView;
 import com.wanshi.app.widget.emptyview.EmptyView;
 import com.wanshi.app.widget.refresh.BGAMoocStyleRefreshViewHolder;
@@ -39,9 +38,15 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
     private EmptyView empty;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View inflaterView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
         View view = inflater.inflate(R.layout.fragment_list_live, null, false);
         mContext = getActivity();
+        return view;
+    }
+
+    protected void initWidget(View view) {
+        super.initWidget(view);
+
         ((TextView) view.findViewById(R.id.textTitleBar)).setText("正在直播");
         mSwipeRefreshWidget = (BGARefreshLayout) view.findViewById(R.id.swipe_refresh_widget);
         recyclerView = (EmptyRecyclerView) view.findViewById(R.id.gridviewLive);
@@ -61,7 +66,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
                 try {
                     String url = URLDecoder.decode((data).getUrlStreamAddr(), "utf-8");
 
-                    Intent intent = new Intent(getActivity(), LiveVideoViewPlayingActivity.class);
+                    Intent intent = new Intent(getActivity(), LiveVideoActivity.class);
                     intent.setData(Uri.parse(url));
                     intent.putExtra("conversationId",data.getConversationId());
                     startActivity(intent);
@@ -73,8 +78,6 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         });
         initRefreshLayout(mSwipeRefreshWidget);
         onBGARefreshLayoutBeginRefreshing(mSwipeRefreshWidget);
-
-        return view;
     }
 
     private void initRefreshLayout(BGARefreshLayout refreshLayout) {
@@ -148,7 +151,7 @@ public class ListLiveFragment extends BaseFragment implements BGARefreshLayout.B
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                mSwipeRefreshWidget.endRefreshing();
+                mSwipeRefreshWidget.endLoadingMore();
                 if(e !=null){
                     empty.showError();
                     return;

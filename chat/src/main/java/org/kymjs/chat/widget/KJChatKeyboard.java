@@ -17,6 +17,7 @@ package org.kymjs.chat.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -104,9 +105,19 @@ public class KJChatKeyboard extends RelativeLayout implements
     }
 
     private void initData() {
-        mKeyboardHelper = new SoftKeyboardStateHelper(((Activity) getContext())
+        mKeyboardHelper = new SoftKeyboardStateHelper((scanForActivity(getContext()) )
                 .getWindow().getDecorView());
         mKeyboardHelper.addSoftKeyboardStateListener(this);
+    }
+    private static Activity scanForActivity(Context cont) {
+        if (cont == null)
+            return null;
+        else if (cont instanceof Activity)
+            return (Activity) cont;
+        else if (cont instanceof ContextWrapper)
+            return scanForActivity(((ContextWrapper) cont).getBaseContext());
+
+        return null;
     }
 
     private void initWidget() {
@@ -117,8 +128,7 @@ public class KJChatKeyboard extends RelativeLayout implements
         mRlFace = (RelativeLayout) findViewById(R.id.toolbox_layout_face);
         mPagerFaceCagetory = (ViewPager) findViewById(R.id.toolbox_pagers_face);
         mFaceTabs = (PagerSlidingTabStrip) findViewById(R.id.toolbox_tabs);
-        adapter = new FaceCategroyAdapter(((FragmentActivity) getContext())
-                .getSupportFragmentManager(), LAYOUT_TYPE_FACE);
+        adapter = new FaceCategroyAdapter(((FragmentActivity) (scanForActivity(getContext()))).getSupportFragmentManager(), LAYOUT_TYPE_FACE);
         mBtnSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,7 +174,7 @@ public class KJChatKeyboard extends RelativeLayout implements
     }
 
     private void changeLayout(int mode) {
-        adapter = new FaceCategroyAdapter(((FragmentActivity) getContext())
+        adapter = new FaceCategroyAdapter(((FragmentActivity) (scanForActivity(getContext())))
                 .getSupportFragmentManager(), mode);
         adapter.setOnOperationListener(listener);
         layoutType = mode;
@@ -240,7 +250,7 @@ public class KJChatKeyboard extends RelativeLayout implements
      * 隐藏软键盘
      */
     public void hideKeyboard(Context context) {
-        Activity activity = (Activity) context;
+        Activity activity = scanForActivity(context);
         if (activity != null) {
             InputMethodManager imm = (InputMethodManager) activity
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -255,12 +265,11 @@ public class KJChatKeyboard extends RelativeLayout implements
      * 显示软键盘
      */
     public static void showKeyboard(Context context) {
-        Activity activity = (Activity) context;
+        Activity activity = scanForActivity(context);
         if (activity != null) {
             InputMethodManager imm = (InputMethodManager) activity
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInputFromInputMethod(activity.getCurrentFocus()
-                    .getWindowToken(), 0);
+            imm.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
             imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }

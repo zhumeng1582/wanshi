@@ -2,7 +2,6 @@ package com.wanshi.app.page.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +14,19 @@ import com.wanshi.app.page.base.BaseFragment;
 import com.wanshi.app.page.me.QQLoginActivity;
 
 public class MeFragment extends BaseFragment implements View.OnClickListener {
+
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View inflaterView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
         View view = inflater.inflate(R.layout.fragment_me, null, false);
         mContext = getActivity();
-        initView(view);
         return view;
     }
-    private void initView(View view) {
+
+    @Override
+    protected void initWidget(View view) {
+        super.initWidget(view);
+
         ((TextView) view.findViewById(R.id.textTitleBar)).setText("我");
         view.findViewById(R.id.llIndividualAccount).setOnClickListener(this);
         view.findViewById(R.id.llHelp).setOnClickListener(this);
@@ -30,9 +34,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         view.findViewById(R.id.llFeedback).setOnClickListener(this);
         view.findViewById(R.id.llSetting).setOnClickListener(this);
         view.findViewById(R.id.llCustomService).setOnClickListener(this);
-
     }
-
 
     @Override
     public void onClick(View v) {

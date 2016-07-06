@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.okhttp.Callback;
 import com.avos.avoscloud.okhttp.OkHttpClient;
 import com.avos.avoscloud.okhttp.Request;
 import com.avos.avoscloud.okhttp.Response;
@@ -12,6 +13,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.umeng.analytics.MobclickAgent;
 import com.wanshi.app.cache.SharePreferenceUtil;
 import com.wanshi.tool.logcollector.LogCollector;
+import com.wanshi.tool.utils.ToastUtil;
 import com.wanshi.tool.utils.logger.LogLevel;
 import com.wanshi.tool.utils.logger.Logger;
 
@@ -37,13 +39,7 @@ public class WanShiApplication  extends Application {
         LogCollector.setDebugMode(true);
 		LogCollector.init(getApplicationContext(), crashLogFilePath);// params
 
-//        try {
-//            run(url);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            KJLoger.debug(TAG, "onCompletion");
-//        }
-
+        run(url);
 
         AVUser currentUser = AVUser.getCurrentUser();
         if (currentUser != null) {
@@ -53,13 +49,18 @@ public class WanShiApplication  extends Application {
         }
     }
 
-    String run(String url) throws IOException {
+    void run(String url)  {
         Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            throw new IOException("Unexpected code " + response);
-        }
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                ToastUtil.showShort(getApplicationContext(),"刷新数据失败");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+            }
+        });
     }
 }

@@ -51,4 +51,5 @@ dependencies {
     compile project(':tool')
     compile files('libs/umeng-analytics-v6.0.0.jar')
     compile files('libs/utdid4all-1.0.4.jar')
+    compile 'com.github.ctiao:DanmakuFlameMaster:0.4.9'
 }

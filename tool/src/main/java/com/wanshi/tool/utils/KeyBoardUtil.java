@@ -1,8 +1,8 @@
 package com.wanshi.tool.utils;
 
 import android.content.Context;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,7 +40,7 @@ public class KeyBoardUtil {
 //        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
 //    }
 
-    public static void openKeybord(final EditText mEditText, final Context mContext) {
+    public static void openKeybord(final View mEditText, final Context mContext) {
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -51,7 +51,7 @@ public class KeyBoardUtil {
         }, 300);
     }
 
-    public static void closeKeybord(EditText mEditText, Context mContext) {
+    public static void closeKeybord(View mEditText, Context mContext) {
         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEditText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
     }

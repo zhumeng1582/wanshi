@@ -1,4 +1,4 @@
-package com.wanshi.app.page.video;
+package com.wanshi.app.page.videorecord;
 
 import android.content.Context;
 import android.net.Uri;
@@ -30,25 +30,30 @@ import com.wanshi.app.R;
 import com.wanshi.app.config.Contants;
 
 import org.kymjs.kjframe.KJActivity;
+import org.kymjs.kjframe.ui.BindView;
 import org.kymjs.kjframe.utils.KJLoger;
 
 public class RecordVideoViewPlayingActivity extends KJActivity implements OnPreparedListener, OnCompletionListener,
         OnErrorListener, OnInfoListener, OnPlayingBufferCacheListener {
 
-    private final String TAG = "LiveVideoViewPlayingActivity";
+    private final String TAG = "LiveVideoFragment";
 
 
     private String mVideoSource;
-
-    private ImageView mPlaybtn;
-    private ImageView btnFullScreen;
+    @BindView(id = R.id.controlbar)
     private LinearLayout mController;
+    @BindView(id = R.id.btnPlay)
+    private ImageView mPlaybtn;
+    @BindView(id = R.id.btnFullScreen)
+    private ImageView btnFullScreen;
+    @BindView(id = R.id.llConversation)
     private LinearLayout llConversation;
-
+    @BindView(id = R.id.media_progress)
     private SeekBar mProgress;
+    @BindView(id = R.id.time_total)
     private TextView mDuration;
+    @BindView(id = R.id.textCurrentTime)
     private TextView mCurrPostion;
-    public static final int REQUEST_CODE_GETIMAGE_BYSDCARD = 0x1;
 
     /**
      * 记录播放位置
@@ -176,21 +181,13 @@ public class RecordVideoViewPlayingActivity extends KJActivity implements OnPrep
 
     //初始化界面
     private void initUI() {
-        mPlaybtn = (ImageView) findViewById(R.id.btnPlay);
-        btnFullScreen = (ImageView) findViewById(R.id.btnFullScreen);
-        mController = (LinearLayout) findViewById(R.id.controlbar);
-        llConversation = (LinearLayout) findViewById(R.id.llConversation);
-        mProgress = (SeekBar) findViewById(R.id.media_progress);
-        mDuration = (TextView) findViewById(R.id.time_total);
-        mCurrPostion = (TextView) findViewById(R.id.textCurrentTime);
+
 
         llConversation.setVisibility(View.GONE);
         registerCallbackForControl();
 
         //设置ak
         BVideoView.setAK(Contants.AK);
-
-        mVV = (BVideoView) findViewById(R.id.video_view);
 
         mVV.setOnPreparedListener(this);
         mVV.setOnCompletionListener(this);

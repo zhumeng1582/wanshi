@@ -16,7 +16,6 @@
 package org.kymjs.kjframe;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -278,32 +277,7 @@ public abstract class KJActivity extends FragmentActivity implements
         aty.startActivity(intent);
     }
 
-    /**
-     * 用Fragment替换视图
-     *
-     * @param resView        将要被替换掉的视图
-     * @param targetFragment 用来替换的Fragment
-     */
-    public void changeFragment(int resView, KJFragment targetFragment) {
-        if (targetFragment.equals(currentKJFragment)) {
-            return;
-        }
-        FragmentTransaction transaction = getFragmentManager()
-                .beginTransaction();
-        if (!targetFragment.isAdded()) {
-            transaction.add(resView, targetFragment, targetFragment.getClass()
-                    .getName());
-        }
-        if (targetFragment.isHidden()) {
-            transaction.show(targetFragment);
-            targetFragment.onChange();
-        }
-        if (currentKJFragment != null && currentKJFragment.isVisible()) {
-            transaction.hide(currentKJFragment);
-        }
-        currentKJFragment = targetFragment;
-        transaction.commit();
-    }
+
 
     /**
      * 用Fragment替换视图

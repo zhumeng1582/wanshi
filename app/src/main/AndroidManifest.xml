@@ -1,74 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wanshi.app" >
+          package="com.wanshi.app">
 
     <!-- 基础模块（必须加入以下声明）START -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <!-- 基础模块 END -->
     <application
         android:name=".WanShiApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:supportsRtl="true" >
-        <activity android:name=".page.main.MainActivity" >
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".page.main.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".page.video.LiveVideoViewPlayingActivity"
-                  android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".page.video.RecordVideoViewPlayingActivity" />
-
-        <activity android:name=".page.me.QQLoginActivity" >
+        <activity android:name=".page.videolive.ConversationActivity">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
             <!--</intent-filter>-->
         </activity>
+        <activity android:name=".page.videolive.LiveVideoActivity"/>
+        <activity android:name=".page.videorecord.RecordVideoViewPlayingActivity"/>
+        <activity android:name=".page.me.QQLoginActivity">
 
-
-
-        <activity android:name="org.kymjs.chat.ChatActivity" />
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name="org.kymjs.chat.ChatActivity"/>
         <!-- &lt;!&ndash; 实时通信模块、推送（若使用该功能，需添加以下声明）START &ndash;&gt; -->
-        <service android:name="com.avos.avoscloud.PushService" />
-        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver" >
+        <service android:name="com.avos.avoscloud.PushService"/>
+
+        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
         <!-- 实时通信模块、推送 END -->
 
+
         <!-- 反馈组件（若使用该功能，需添加以下声明）START -->
-        <activity android:name="com.avos.avoscloud.feedback.ThreadActivity" >
+        <activity android:name="com.avos.avoscloud.feedback.ThreadActivity">
         </activity>
         <!-- 反馈组件 END -->
 
-        <activity android:name="com.tencent.tauth.AuthActivity"
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
             android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="tencent1105334255" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="tencent1105334255"/>
             </intent-filter>
         </activity>
 
-        <meta-data android:value="5744f73167e58e48140000b9" android:name="UMENG_APPKEY"/>
-        <meta-data android:value="Wandoujia" android:name="UMENG_CHANNEL"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5744f73167e58e48140000b9"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Wandoujia"/>
+
     </application>
 
 </manifest>

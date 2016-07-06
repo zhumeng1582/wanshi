@@ -17,7 +17,7 @@ package org.kymjs.kjframe.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +33,7 @@ import java.lang.ref.SoftReference;
  * @author kymjs (https://github.com/kymjs)
  * @version 1.6
  */
-public abstract class KJFragment extends Fragment implements View.OnClickListener {
+public abstract class KJDialogFragment extends DialogFragment implements View.OnClickListener {
 
     public static final int WHICH_MSG = 0X37211;
 
@@ -50,16 +50,16 @@ public abstract class KJFragment extends Fragment implements View.OnClickListene
 
 
     private static class KJFragmentHandle extends Handler {
-        private final SoftReference<KJFragment> mOuterInstance;
+        private final SoftReference<KJDialogFragment> mOuterInstance;
 
-        KJFragmentHandle(KJFragment outer) {
+        KJFragmentHandle(KJDialogFragment outer) {
             mOuterInstance = new SoftReference<>(outer);
         }
 
         // 当线程中初始化的数据初始化完成后，调用回调方法
         @Override
         public void handleMessage(android.os.Message msg) {
-            KJFragment kjFragment = mOuterInstance.get();
+            KJDialogFragment kjFragment = mOuterInstance.get();
             if (msg.what == WHICH_MSG && kjFragment != null) {
                 kjFragment.callback.onSuccess();
             }

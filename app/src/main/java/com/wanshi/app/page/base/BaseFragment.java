@@ -1,7 +1,8 @@
 package com.wanshi.app.page.base;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+
+import org.kymjs.kjframe.ui.KJFragment;
 
 /**
  * User: Geek_Soledad(msdx.android@qq.com)
@@ -9,7 +10,7 @@ import android.support.v4.app.Fragment;
  * Time: 09:01
  * FIXME
  */
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends KJFragment {
     protected String TAG =  getClass().getSimpleName();
     protected Activity mContext = getActivity();
     private String title;

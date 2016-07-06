@@ -3,7 +3,6 @@ package com.wanshi.app.page.main;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.wanshi.app.R;
 import com.wanshi.app.adapter.ListLiveAdapter;
 import com.wanshi.app.bean.Room;
 import com.wanshi.app.page.base.BaseFragment;
-import com.wanshi.app.page.video.RecordVideoViewPlayingActivity;
+import com.wanshi.app.page.videorecord.RecordVideoViewPlayingActivity;
 import com.wanshi.app.widget.emptyview.EmptyRecyclerView;
 import com.wanshi.app.widget.emptyview.EmptyView;
 import com.wanshi.app.widget.refresh.BGAMoocStyleRefreshViewHolder;
@@ -41,9 +40,16 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
     private EmptyView empty;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View inflaterView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
         View view = inflater.inflate(R.layout.fragment_list_live, null, false);
         mContext = getActivity();
+        return view;
+    }
+
+    @Override
+    protected void initWidget(View view) {
+        super.initWidget(view);
+
         ((TextView) view.findViewById(R.id.textTitleBar)).setText("精彩回放");
         mSwipeRefreshWidget = (BGARefreshLayout) view.findViewById(R.id.swipe_refresh_widget);
         recyclerView = (EmptyRecyclerView) view.findViewById(R.id.gridviewLive);
@@ -73,8 +79,6 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
         });
         initRefreshLayout(mSwipeRefreshWidget);
         onBGARefreshLayoutBeginRefreshing(mSwipeRefreshWidget);
-
-        return view;
     }
 
     private void initRefreshLayout(BGARefreshLayout refreshLayout) {
@@ -170,7 +174,7 @@ public class ListRecordFragment extends BaseFragment implements BGARefreshLayout
             @Override
             public void done(List<AVObject> list, AVException e) {
 
-                mSwipeRefreshWidget.endRefreshing();
+                mSwipeRefreshWidget.endLoadingMore();
                 if(e !=null){
                     empty.showError();
                     return;
