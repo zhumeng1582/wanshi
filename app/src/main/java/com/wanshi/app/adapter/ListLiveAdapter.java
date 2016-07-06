@@ -3,6 +3,7 @@ package com.wanshi.app.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +55,12 @@ public class ListLiveAdapter extends RecyclerView.Adapter<ListLiveAdapter.Holder
     @Override
     public void onBindViewHolder(Holder holder, int position)
     {
+        if(TextUtils.isEmpty(listRoom.get(position).getConversationId())){
+            holder.textRoomName.setText(listRoom.get(position).getRoomName()+"(x)");
+        }else{
+            holder.textRoomName.setText(listRoom.get(position).getRoomName());
+        }
 
-        holder.textRoomName.setText(listRoom.get(position).getRoomName());
         holder.imageRoomIcon.setImageURI(Uri.parse(listRoom.get(position).getUrlRoomIcon()));
         holder.itemView.setTag(listRoom.get(position));
     }

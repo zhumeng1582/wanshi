@@ -18,7 +18,7 @@ package org.kymjs.chat.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
@@ -42,6 +42,11 @@ import java.util.List;
  */
 public class KJChatKeyboard extends RelativeLayout implements
         SoftKeyboardStateHelper.SoftKeyboardStateListener {
+
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+        adapter = new FaceCategroyAdapter(fragmentManager,LAYOUT_TYPE_HIDE);
+    }
 
     public interface OnToolBoxListener {
         void onShowFace();
@@ -75,6 +80,7 @@ public class KJChatKeyboard extends RelativeLayout implements
     private OnOperationListener listener;
     private OnToolBoxListener mFaceListener;
     private SoftKeyboardStateHelper mKeyboardHelper;
+    private FragmentManager fragmentManager;
 
     public KJChatKeyboard(Context context) {
         super(context);
@@ -126,9 +132,8 @@ public class KJChatKeyboard extends RelativeLayout implements
         mBtnFace = (CheckBox) findViewById(R.id.toolbox_btn_face);
         mBtnMore = (CheckBox) findViewById(R.id.toolbox_btn_more);
         mRlFace = (RelativeLayout) findViewById(R.id.toolbox_layout_face);
-        mPagerFaceCagetory = (ViewPager) findViewById(R.id.toolbox_pagers_face);
+        mPagerFaceCagetory = (ViewPager) findViewById(R.id.toolbox_viewpage_face);
         mFaceTabs = (PagerSlidingTabStrip) findViewById(R.id.toolbox_tabs);
-        adapter = new FaceCategroyAdapter(((FragmentActivity) (scanForActivity(getContext()))).getSupportFragmentManager(), LAYOUT_TYPE_FACE);
         mBtnSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,6 +165,9 @@ public class KJChatKeyboard extends RelativeLayout implements
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(fragmentManager == null){
+                    return;
+                }
                 if (isShow() && which == layoutType) {
                     hideLayout();
                     showKeyboard(context);
@@ -174,8 +182,7 @@ public class KJChatKeyboard extends RelativeLayout implements
     }
 
     private void changeLayout(int mode) {
-        adapter = new FaceCategroyAdapter(((FragmentActivity) (scanForActivity(getContext())))
-                .getSupportFragmentManager(), mode);
+        adapter = new FaceCategroyAdapter(fragmentManager,mode);
         adapter.setOnOperationListener(listener);
         layoutType = mode;
         setFaceData(mFaceData);
@@ -275,18 +282,13 @@ public class KJChatKeyboard extends RelativeLayout implements
     }
 
 
-    public OnOperationListener getOnOperationListener() {
-        return listener;
-    }
-
-    public void setOnOperationListener(OnOperationListener onOperationListener) {
+    public void setOnOperationListener(FragmentManager fragmentManager,OnOperationListener onOperationListener) {
         this.listener = onOperationListener;
-        adapter.setOnOperationListener(onOperationListener);
+        setFragmentManager(fragmentManager);
     }
 
     public void setOnToolBoxListener(OnToolBoxListener mFaceListener) {
         this.mFaceListener = mFaceListener;
     }
 
-    /*********************** 可选调用的方法 end ******************************/
 }

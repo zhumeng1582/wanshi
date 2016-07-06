@@ -110,7 +110,7 @@ public class ConversationDialogFragment extends KJDialogFragment {
             @Override
             public void onBackPressed() {
                 //监听软键盘不存在时 dialog的返回键监听 处理自定义逻辑
-//                dismiss();
+                dismiss();
 //                getActivity().finish();
                 super.onBackPressed();
             }
@@ -160,7 +160,8 @@ public class ConversationDialogFragment extends KJDialogFragment {
 
     }
     private void initMessageInputToolBox() {
-        keyboard.setOnOperationListener(new OnOperationListener() {
+        keyboard.setFragmentManager(getChildFragmentManager());
+        keyboard.setOnOperationListener(getChildFragmentManager(),new OnOperationListener() {
             @Override
             public void send(final String content) {
 
@@ -212,8 +213,8 @@ public class ConversationDialogFragment extends KJDialogFragment {
             public void selectedFunction(int index) {
                 switch (index) {
                     case 0:
-//                        goToAlbum();
-                        ViewInject.toast("跳转相册");
+                        goToAlbum();
+//                        ViewInject.toast("跳转相册");
                         break;
                     case 1:
                         ViewInject.toast("跳转相机");
@@ -346,14 +347,11 @@ public class ConversationDialogFragment extends KJDialogFragment {
             intent = new Intent();
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "选择图片"),
-                    REQUEST_CODE_GETIMAGE_BYSDCARD);
+            startActivityForResult(Intent.createChooser(intent, "选择图片"), REQUEST_CODE_GETIMAGE_BYSDCARD);
         } else {
-            intent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "选择图片"),
-                    REQUEST_CODE_GETIMAGE_BYSDCARD);
+            startActivityForResult(Intent.createChooser(intent, "选择图片"), REQUEST_CODE_GETIMAGE_BYSDCARD);
         }
     }
     @Override
@@ -378,9 +376,9 @@ public class ConversationDialogFragment extends KJDialogFragment {
             Uri dataUri = data.getData();
             if (dataUri != null) {
                 File file = FileUtils.uri2File(getActivity(), dataUri);
-                org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO, org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS,
-                        name, "avatar", "Jerry",
-                        "avatar", file.getAbsolutePath(), true, true, new Date());
+                org.kymjs.chat.bean.Message message = new org.kymjs.chat.bean.Message(org.kymjs.chat.bean.Message.MSG_TYPE_PHOTO,
+                        org.kymjs.chat.bean.Message.MSG_STATE_SUCCESS, name, "avatar", "Jerry", "avatar",
+                        file.getAbsolutePath(), true, true, new Date());
                 adapter.add(message);
             }
         }

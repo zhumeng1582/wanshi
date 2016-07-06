@@ -72,7 +72,7 @@
         android:visibility="gone">
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/toolbox_pagers_face"
+            android:id="@+id/toolbox_viewpage_face"
             android:layout_width="match_parent"
             android:layout_height="160dp">
         </android.support.v4.view.ViewPager>
@@ -81,7 +81,7 @@
             android:id="@+id/toolbox_tabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/toolbox_pagers_face"
+            android:layout_below="@+id/toolbox_viewpage_face"
             android:background="#ffffff"
             android:visibility="visible"
             app:pstsDividerColor="#a7a5a5"

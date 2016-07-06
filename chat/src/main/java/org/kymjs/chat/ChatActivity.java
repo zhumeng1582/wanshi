@@ -71,7 +71,7 @@ public class ChatActivity extends KJActivity {
     }
 
     private void initMessageInputToolBox() {
-        box.setOnOperationListener(new OnOperationListener() {
+        box.setOnOperationListener(getSupportFragmentManager(),new OnOperationListener() {
             @Override
             public void send(String content) {
                 Message message = new Message(Message.MSG_TYPE_TEXT, Message.MSG_STATE_SUCCESS,

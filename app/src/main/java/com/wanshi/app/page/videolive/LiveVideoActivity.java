@@ -1,7 +1,6 @@
 package com.wanshi.app.page.videolive;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -35,16 +34,6 @@ public class LiveVideoActivity  extends KJActivity {
                 .commit();
 
         new ConversationDialogFragment().show(getSupportFragmentManager(), "ConversationDialogFragment");
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
-            finish();
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
     }
 
     @Override

@@ -13,7 +13,6 @@ import android.os.Process;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.baidu.cyberplayer.core.BVideoView;
@@ -36,8 +35,6 @@ public class LiveVideoFragment extends KJFragment implements OnPreparedListener,
 
     private String mVideoSource = null;
 
-    @BindView(id = R.id.controlbar)
-    private LinearLayout mController;
     @BindView(id = R.id.textCurrentTime)
     private TextView mCurrPostion;
 
@@ -130,8 +127,6 @@ public class LiveVideoFragment extends KJFragment implements OnPreparedListener,
     public void initWidget(View view) {
         super.initWidget(view);
 
-
-
         PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
 
@@ -146,7 +141,6 @@ public class LiveVideoFragment extends KJFragment implements OnPreparedListener,
             }
         }
 
-
         initUI();
 
         /**
@@ -155,11 +149,7 @@ public class LiveVideoFragment extends KJFragment implements OnPreparedListener,
         mHandlerThread = new HandlerThread("event handler thread", Process.THREAD_PRIORITY_BACKGROUND);
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
-
-
     }
-
-
 
 
     /**
@@ -167,58 +157,18 @@ public class LiveVideoFragment extends KJFragment implements OnPreparedListener,
      */
     private void initUI() {
 
-        registerCallbackForControl();
+        //设置ak
 
-        /**
-         * 设置ak
-         */
         BVideoView.setAK(Contants.AK);
-
-        /**
-         * 注册listener
-         */
+        //注册listener
         mVV.setOnPreparedListener(this);
         mVV.setOnCompletionListener(this);
         mVV.setOnErrorListener(this);
         mVV.setOnInfoListener(this);
-
-        /**
-         * 设置解码模式
-         */
+        //设置解码模式
         mVV.setDecodeMode(mIsHwDecode ? BVideoView.DECODE_HW : BVideoView.DECODE_SW);
     }
 
-    /**
-     * 为控件注册回调处理函数
-     */
-    private void registerCallbackForControl() {
-//        mPlaybtn.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-//                if (mVV.isPlaying()) {
-//                    mPlaybtn.setImageResource(R.drawable.btn_style_play);
-//                    //暂停播放
-//                    mVV.pause();
-//                } else {
-//                    mPlaybtn.setImageResource(R.drawable.btn_style_pause);
-//                    //继续播放
-//                    mVV.resume();
-//                }
-//
-//            }
-//        });
-//        btnFullScreen.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(llConversation.getVisibility() == View.VISIBLE){
-//                    llConversation.setVisibility(View.GONE);
-//                    btnFullScreen.setImageResource(R.drawable.btn_style_zoom_out);
-//                }else{
-//                    llConversation.setVisibility(View.VISIBLE);
-//                    btnFullScreen.setImageResource(R.drawable.btn_style_zoom_in);
-//                }
-//            }
-//        });
-    }
 
     private void updateTextViewWithTimeFormat(TextView view, int second) {
         int hh = second / 3600;
@@ -253,33 +203,6 @@ public class LiveVideoFragment extends KJFragment implements OnPreparedListener,
         }
         //发起一次播放任务,当然您不一定要在这发起
         mEventHandler.sendEmptyMessage(EVENT_PLAY);
-    }
-
-    private long mTouchTime;
-    private boolean barShow = true;
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_DOWN)
-//            mTouchTime = System.currentTimeMillis();
-//        else if (event.getAction() == MotionEvent.ACTION_UP) {
-//            long time = System.currentTimeMillis() - mTouchTime;
-//            if (time < 400) {
-//                updateControlBar(!barShow);
-//            }
-//        }
-//
-//        return true;
-//    }
-
-    public void updateControlBar(boolean show) {
-
-        if (show) {
-            mController.setVisibility(View.VISIBLE);
-        } else {
-            mController.setVisibility(View.INVISIBLE);
-        }
-        barShow = show;
     }
 
     @Override

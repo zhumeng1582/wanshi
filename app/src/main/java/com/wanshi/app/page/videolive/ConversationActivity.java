@@ -146,7 +146,7 @@ public class ConversationActivity extends KJActivity {
 
     }
     private void initMessageInputToolBox() {
-        keyboard.setOnOperationListener(new OnOperationListener() {
+        keyboard.setOnOperationListener(getSupportFragmentManager(),new OnOperationListener() {
             @Override
             public void send(final String content) {
 

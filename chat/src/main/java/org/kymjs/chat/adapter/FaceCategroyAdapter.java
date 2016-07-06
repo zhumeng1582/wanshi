@@ -52,6 +52,7 @@ public class FaceCategroyAdapter extends FragmentStatePagerAdapter implements
         sMode = mode;
     }
 
+
     @Override
     public void setPageIcon(int position, ImageView image) {
         if (position == 0) {

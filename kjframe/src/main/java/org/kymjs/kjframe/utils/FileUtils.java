@@ -15,6 +15,16 @@
  */
 package org.kymjs.kjframe.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -30,16 +40,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
 
 /**
  * 文件与流处理工具类<br>
@@ -160,22 +160,17 @@ public final class FileUtils {
             // 在API11以下可以使用：managedQuery
             String[] proj = { MediaStore.Images.Media.DATA };
             @SuppressWarnings("deprecation")
-            Cursor actualimagecursor = aty.managedQuery(uri, proj, null, null,
-                    null);
-            int actual_image_column_index = actualimagecursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            Cursor actualimagecursor = aty.managedQuery(uri, proj, null, null, null);
+            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             actualimagecursor.moveToFirst();
-            String img_path = actualimagecursor
-                    .getString(actual_image_column_index);
+            String img_path = actualimagecursor.getString(actual_image_column_index);
             return new File(img_path);
         } else {
             // 在API11以上：要转为使用CursorLoader,并使用loadInBackground来返回
             String[] projection = { MediaStore.Images.Media.DATA };
-            CursorLoader loader = new CursorLoader(aty, uri, projection, null,
-                    null, null);
+            CursorLoader loader = new CursorLoader(aty, uri, projection, null, null, null);
             Cursor cursor = loader.loadInBackground();
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return new File(cursor.getString(column_index));
         }
